@@ -32,4 +32,24 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
         return leaveRequestMapper.getLeaveRequestsByUserId(userId);
     }
 
+    // 내 연차 수정
+    @Override
+    @Transactional
+    public void updateLeaveRequest(LeaveRequestVO vo, String userId) {
+        int result = leaveRequestMapper.updateLeaveRequest(vo, userId);
+        if (result == 0) {
+            throw new RuntimeException("수정 권한이 없거나, 이미 처리된 신청 건입니다.");
+        }
+    }
+
+    // 내 연차 삭제
+    @Override
+    @Transactional
+    public void deleteLeaveRequest(Long leaveId) {
+        int result = leaveRequestMapper.deleteLeaveRequest(leaveId);
+        if (result == 0) {
+            throw new RuntimeException("연차 삭제에 실패했습니다.");
+        }
+    }
+
 }

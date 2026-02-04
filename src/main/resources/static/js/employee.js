@@ -44,23 +44,57 @@ function closeEditModal() {
 }
 
 // 삭제 확인
-function confirmDelete(requestId) {
+function confirmDelete(leaveId) {
     if (confirmAction('정말 삭제하시겠습니까?')) {
         // JSP 폼 제출 또는 삭제 링크 클릭
-        const form = document.getElementById('deleteForm_' + requestId);
+        const form = document.getElementById('deleteForm_' + leaveId);
         if (form) {
             form.submit();
+        } else {
+            console.error("삭제 건을 찾을 수 없습니다 ID:", leaveId);
         }
     }
 }
 
-document.getElementById('leaveRequestForm').onsubmit = function (e) {
-    const start = new Date(document.getElementById('startDate').value);
-    const end = new Date(document.getElementById('endDate').value);
+// 연차 신청 및 수정 폼 유효성 검사
+document.addEventListener('DOMContentLoaded', function () {
+    const leaveForm = document.getElementById('leaveRequestForm');
+    const editForm = document.getElementById('editForm');
+    // 신청 폼 유효성 검사
+    if (leaveForm) {
+        leaveForm.onsubmit = function (e) {
+            const startVal = document.getElementById('startDate').value;
+            const endVal = document.getElementById('endDate').value;
 
-    if (start > end) {
-        alert("종료일은 시작일보다 빠를 수 없습니다.");
-        e.preventDefault(); // 폼 전송 중단
-        return false;
+            if (!startVal || !endVal) return true; // HTML5 required가 처리하도록 함
+
+            const start = new Date(startVal);
+            const end = new Date(endVal);
+
+            if (start > end) {
+                alert("종료일은 시작일보다 빠를 수 없습니다.");
+                e.preventDefault();
+                return false;
+            }
+        };
     }
-};
+
+    // 수정 폼 유효성 검사
+    if (editForm) {
+        editForm.onsubmit = function (e) {
+            const startVal = document.getElementById('editStartDate').value;
+            const endVal = document.getElementById('editEndDate').value;
+
+            if (!startVal || !endVal) return true; // HTML5 required가 처리하도록 함
+
+            const start = new Date(startVal);
+            const end = new Date(endVal);
+
+            if (start > end) {
+                alert("종료일은 시작일보다 빠를 수 없습니다.");
+                e.preventDefault();
+                return false;
+            }
+        };
+    }
+});

@@ -43,3 +43,11 @@ function closeModal(modalId) {
 function confirmAction(message) {
     return confirm(message);
 }
+
+// 폼 초기화
+function resetForm(formId) {
+    const form = document.getElementById(formId);
+    if (form) {
+        form.reset();
+    }
+}   

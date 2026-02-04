@@ -8,4 +8,8 @@ public interface LeaveRequestService {
     void insertLeaveRequest(LeaveRequestVO leaveRequest);
 
     List<LeaveRequestVO> getLeaveRequestsByUserId(String userId);
+
+    void updateLeaveRequest(LeaveRequestVO vo, String userId);
+
+    void deleteLeaveRequest(Long leaveId);
 }

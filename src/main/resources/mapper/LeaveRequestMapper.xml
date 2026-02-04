@@ -37,6 +37,24 @@
         FROM leave_request
         WHERE user_id = #{userId}
     </select>
+    <update id="updateLeaveRequest">
+        UPDATE leave_request
+        SET 
+            leave_type = #{vo.leaveType},
+            start_date = #{vo.startDate},
+            end_date = #{vo.endDate},
+            reason = #{vo.reason},
+            updated_at = SYSDATE
+        WHERE 
+            leave_id = #{vo.leaveId} 
+            AND user_id = #{userId} 
+            AND status = 'PENDING'
+    </update>
+    <delete id="deleteLeaveRequest" parameterType="long">
+        DELETE FROM leave_request
+        WHERE leave_id = #{leaveId} 
+              AND status = 'PENDING'
+    </delete>
 
 
 </mapper>

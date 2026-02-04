@@ -70,4 +70,44 @@ public class LeaveRequestController {
         return "user/employee";
     }
 
+    // 내 연차 수정
+    @PostMapping("/leave/update")
+    public String updateLeaveRequest(LeaveRequestVO vo, HttpSession session, RedirectAttributes rttr) {
+        // 세션에서 로그인한 유저 정보 꺼내기
+        UserVO loginUser = (UserVO) session.getAttribute("loginUser");
+
+        if (loginUser == null) {
+            rttr.addFlashAttribute("errorMsg", "로그인이 필요합니다.");
+            return "redirect:/login";
+        }
+
+        System.out.println("수정할 연차 ID: " + vo.getLeaveId());
+        System.out.println("수정할 연차 타입: " + vo.getLeaveType());
+        System.out.println("수정할 시작일: " + vo.getStartDate());
+        System.out.println("수정할 종료일: " + vo.getEndDate());
+        System.out.println("수정할 사유: " + vo.getReason());
+
+        // 연차 수정 서비스 호출
+        try {
+            leaveRequestService.updateLeaveRequest(vo, loginUser.getUserId());
+            rttr.addFlashAttribute("message", "연차 신청이 성공적으로 수정되었습니다.");
+        } catch (Exception e) {
+            rttr.addFlashAttribute("errorMsg", "연차 신청 수정 중 오류가 발생했습니다: " + e.getMessage());
+        }
+        return "redirect:/employee";
+    }
+
+    // 내 연차 삭제
+    @PostMapping("/leave/delete")
+    public String deleteLeaveRequest(Long leaveId, RedirectAttributes rttr) {
+        // 연차 삭제 서비스 호출
+        try {
+            leaveRequestService.deleteLeaveRequest(leaveId);
+            rttr.addFlashAttribute("message", "연차 신청이 성공적으로 삭제되었습니다.");
+        } catch (Exception e) {
+            rttr.addFlashAttribute("errorMsg", "연차 신청 삭제 중 오류가 발생했습니다: " + e.getMessage());
+        }
+        return "redirect:/employee";
+    }
+
 }
