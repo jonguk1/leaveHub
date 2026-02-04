@@ -1,4 +1,4 @@
-package com.example.leaveHub.service.User;
+package com.example.leaveHub.service.user;
 
 import org.springframework.stereotype.Service;
 

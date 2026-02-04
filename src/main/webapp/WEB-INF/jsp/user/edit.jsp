@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
-<jsp:include page="header.jsp" />
 
 <body>
     <!-- Edit Modal -->
@@ -40,6 +39,7 @@
                 </div>
 
                 <div class="modal-footer">
+                    <input type="hidden" id="editLeaveId" name="leaveId">
                     <button type="submit" class="btn btn-primary" style="flex: 1;">수정 완료</button>
                     <button type="button" class="btn btn-outline" onclick="closeEditModal()">취소</button>
                 </div>

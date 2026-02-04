@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.leaveHub.mapper.LeaveRequestMapper">
+    <insert id="insertLeaveRequest" parameterType="com.example.leaveHub.vo.LeaveRequestVO">
+        INSERT INTO leave_request
+        (
+            user_id,
+            leave_type, 
+            start_date, 
+            end_date, 
+            reason, 
+            status
+        )
+        VALUES 
+        (
+            #{userId}, 
+            #{leaveType},
+            #{startDate},
+            #{endDate}, 
+            #{reason}, 
+            #{status}
+        )
+    </insert>
+    <select id="getLeaveRequestsByUserId" parameterType="string" resultType="com.example.leaveHub.vo.LeaveRequestVO">
+        SELECT 
+            leave_id,
+            user_id,
+            leave_type,
+            start_date,
+            end_date,
+            reason,
+            status,
+            created_at,
+            updated_at
+        FROM leave_request
+        WHERE user_id = #{userId}
+    </select>
+
+
+</mapper>

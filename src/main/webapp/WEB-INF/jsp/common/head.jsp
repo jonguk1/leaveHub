@@ -7,4 +7,5 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>연차 관리 시스템</title>
     <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/util.js"></script>
 </head>

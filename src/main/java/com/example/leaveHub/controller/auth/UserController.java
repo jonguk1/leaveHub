@@ -3,7 +3,7 @@ package com.example.leaveHub.controller.auth;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
-import com.example.leaveHub.service.User.UserService;
+import com.example.leaveHub.service.user.UserService;
 import com.example.leaveHub.vo.UserVO;
 
 import jakarta.servlet.http.HttpSession;
@@ -43,11 +43,6 @@ public class UserController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/";
-    }
-
-    @GetMapping("/employee")
-    public String employeeMain() {
-        return "user/employee";
     }
 
     @GetMapping("/admin")

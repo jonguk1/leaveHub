@@ -1,79 +1,146 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:import url="/WEB-INF/jsp/common/head.jsp" />
+<script src="/js/employee.js"></script>
+<c:if test="${not empty message}">
+    <script>
+        alert("${message}");
+    </script>
+</c:if>
+
+<c:if test="${not empty errorMsg}">
+    <script>
+        alert("실패: ${errorMsg}");
+    </script>
+</c:if>
 
 <!-- Employee Dashboard -->
-<div id="employeeScreen">
-    <div class="header">
-        <div class="header-content">
-            <div class="header-title">
-                <span>📅</span>
-                <span>연차 관리 시스템</span>
-            </div>
-            <div class="header-user">
-                <span id="employeeUserName"><strong>${loginUser.userName}</strong>님</span>
-                <button class="btn btn-outline btn-sm" onclick="location.href='/logout'">로그아웃</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="card">
-            <div class="tabs">
-                <div class="tab-list">
-                    <button class="tab-button active" onclick="switchEmployeeTab('apply')">연차 신청</button>
-                    <button class="tab-button" onclick="switchEmployeeTab('mylist')">내 신청 내역</button>
+    <div id="employeeScreen">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-title">
+                    <span>📅</span>
+                    <span>연차 관리 시스템</span>
                 </div>
-
-                <!-- 연차 신청 탭 -->
-                <div id="applyTab" class="tab-content active">
-                    <h2 style="margin-bottom: 0.5rem;">연차 신청하기</h2>
-                    <p class="card-description" style="margin-bottom: 1.5rem;">신청한 연차는 관리자의 승인 후 확정됩니다</p>
-
-                    <form id="leaveRequestForm">
-                        <div class="form-group">
-                            <label for="leaveType">연차 종류</label>
-                            <select id="leaveType" required>
-                                <option value="연차">연차</option>
-                                <option value="반차">반차</option>
-                                <option value="오전반차">오전반차</option>
-                                <option value="오후반차">오후반차</option>
-                                <option value="병가">병가</option>
-                                <option value="경조사">경조사</option>
-                            </select>
-                        </div>
-
-                        <div class="grid-2">
-                            <div class="form-group">
-                                <label for="startDate">시작일</label>
-                                <input type="date" id="startDate" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="endDate">종료일</label>
-                                <input type="date" id="endDate" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="reason">사유</label>
-                            <textarea id="reason" rows="4" placeholder="연차 사용 사유를 입력하세요" required></textarea>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary btn-full">신청하기</button>
-                    </form>
-                </div>
-
-                <!-- 내 신청 내역 탭 -->
-                <div id="mylistTab" class="tab-content">
-                    <h2 style="margin-bottom: 0.5rem;">내 연차 신청 내역</h2>
-                    <p class="card-description" style="margin-bottom: 1.5rem;">총 <span id="myRequestCount">0</span>건의 신청
-                        내역</p>
-
-                    <div id="myRequestList"></div>
+                <div class="header-user">
+                    <span id="employeeUserName"><strong><c:out value="${loginUser.userName}" /></strong>님 환영합니다</span>
+                    <a href="/logout" class="btn btn-outline btn-sm">로그아웃</a>
                 </div>
             </div>
         </div>
+
+        <div class="container">
+            <div class="card">
+                <div class="tabs">
+                    <div class="tab-list">
+                        <button type="button" class="tab-button active" data-tab="apply" onclick="switchEmployeeTab('apply')">연차 신청</button>
+                        <button type="button" class="tab-button" data-tab="mylist" onclick="switchEmployeeTab('mylist')">내 신청 내역</button>
+                    </div>
+
+                    <!-- 연차 신청 탭 -->
+                    <div id="applyTab" class="tab-content active">
+                        <h2 style="margin-bottom: 0.5rem;">연차 신청하기</h2>
+                        <p class="card-description" style="margin-bottom: 1.5rem;">신청한 연차는 관리자의 승인 후 확정됩니다</p>
+                        
+                        <form id="leaveRequestForm" action="/leave/insert" method="POST">
+                            <div class="form-group">
+                                <label for="leaveType">연차 종류</label>
+                                <select id="leaveType" name="leaveType" required>
+                                    <option value="연차">연차</option>
+                                    <option value="반차">반차</option>
+                                    <option value="오전반차">오전반차</option>
+                                    <option value="오후반차">오후반차</option>
+                                    <option value="병가">병가</option>
+                                    <option value="경조사">경조사</option>
+                                </select>
+                            </div>
+
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label for="startDate">시작일</label>
+                                    <input type="date" id="startDate" name="startDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="endDate">종료일</label>
+                                    <input type="date" id="endDate" name="endDate" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="reason">사유</label>
+                                <textarea id="reason" name="reason" rows="4" placeholder="연차 사용 사유를 입력하세요" required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-full">신청하기</button>
+                        </form>
+                    </div>
+
+                    <!-- 내 신청 내역 탭 -->
+                    <div id="mylistTab" class="tab-content">
+                        <h2 style="margin-bottom: 0.5rem;">내 연차 신청 내역</h2>
+                        <p class="card-description" style="margin-bottom: 1.5rem;">
+                            총 <span id="myRequestCount"> ${requestList.size()}</span>건의 신청 내역
+                        </p>
+                        
+                        <div id="myRequestList">
+                            <!-- 신청 내역 반복 -->
+                            <c:if test="${empty requestList}">
+                                <div class="empty-state">신청 내역이 없습니다</div>
+                            </c:if>
+                             <c:if test="${not empty requestList}">
+                                <c:forEach var="request" items="${requestList}">
+                                    <div class="request-item" 
+                                        data-leave-id="${request.leaveId}"
+                                        data-leave-type="${request.leaveType}"
+                                        data-start-date="${request.startDate}"
+                                        data-end-date="${request.endDate}"
+                                        data-reason="${request.reason}">
+                                        <div class="request-header">
+                                            <div class="request-info">
+                                                <div class="request-title">
+                                                    <span style="font-weight: 500;">${request.leaveType}</span>
+                                                    <c:set var="statusClass" value="${request.status == 'PENDING' ? 'secondary' : request.status == 'APPROVED' ? 'success' : 'danger'}" />
+                                                    <span class="badge badge-${statusClass}">
+                                                        ${request.status.description}
+                                                    </span>
+                                                </div>
+                                                <div class="request-date">
+                                                    <fmt:formatDate value="${request.startDate}" pattern="yyyy.MM.dd" /> 
+                                                    ~ 
+                                                    <fmt:formatDate value="${request.endDate}" pattern="yyyy.MM.dd" />
+                                                </div>
+                                            </div>
+                                            <c:if test="${request.status == 'PENDING'}">
+                                                <div class="request-actions">
+                                                    <button type="button" class="btn btn-outline btn-sm" onclick="openEditModal('${request.leaveId}')">✏️</button>
+                                                    <button type="button" class="btn btn-outline btn-sm" onclick="confirmDelete('${request.leaveId}')">🗑️</button>
+                                                </div>
+                                            </c:if>
+                                        </div>
+                                        <div class="request-reason">
+                                            <span class="request-reason-label">사유: </span><c:out value="${request.reason}" />
+                                        </div>
+                                        <c:if test="${request.status == 'REJECTED' && not empty request.rejectReason}">
+                                            <div class="reject-reason">
+                                                <span class="reject-reason-label">반려 사유: </span>
+                                                <span class="reject-reason-text">${request.rejectReason}</span>
+                                            </div>
+                                        </c:if>
+                                        <div class="request-created">신청일: <fmt:formatDate value="${request.createdAt}" pattern="yyyy.MM.dd" /></div>
+                                        
+                                        <form id="deleteForm_${request.leaveId}" action="/leave/delete" method="POST" style="display:none;">
+                                            <input type="hidden" name="leaveId" value="${request.leaveId}">
+                                        </form>
+                                    </div>
+                                </c:forEach>
+                            </c:if>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <c:import url="/WEB-INF/jsp/user/edit.jsp" />
     </div>
-</div>
 
 </html>
