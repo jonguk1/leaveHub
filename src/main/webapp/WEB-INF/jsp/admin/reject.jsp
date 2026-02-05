@@ -1,9 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
-<jsp:include page="header.jsp" />
-
-<body>
-    <!-- Reject Modal -->
     <div id="rejectModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -11,10 +7,12 @@
                 <p class="modal-description">반려 사유를 입력해주세요</p>
             </div>
             <div id="rejectRequestInfo" class="info-box"></div>
-            <form id="rejectForm">
+            <form id="rejectForm" action="/admin/reject" method="POST">
+                <input type="hidden" id="leaveId" name="id">
+                
                 <div class="form-group">
                     <label for="rejectReason">반려 사유</label>
-                    <textarea id="rejectReason" rows="4" placeholder="반려 사유를 입력하세요" required></textarea>
+                    <textarea id="rejectReason" name="rejectReason" rows="4" placeholder="반려 사유를 입력하세요" required></textarea>
                 </div>
 
                 <div class="modal-footer">
@@ -24,6 +22,3 @@
             </form>
         </div>
     </div>
-</body>
-
-</html>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.leaveHub.mapper.AdminMapper">
+    <select id="isAdmin" parameterType="string" resultType="int">
+        SELECT CASE 
+                WHEN EXISTS (
+                    SELECT 1 FROM users 
+                    WHERE role = 'ADMIN' 
+                    AND user_id = #{userId}
+                ) THEN 1 
+                ELSE 0 
+            END
+        FROM dual
+    </select>
+
+    <select id="getAllLeaveRequests" resultType="com.example.leaveHub.vo.LeaveRequestVO">
+        SELECT 
+            leave_id,
+            user_id,
+            leave_type,
+            start_date,
+            end_date,
+            reason,
+            status,
+            created_at,
+            updated_at
+        FROM leave_request
+    </select>
+
+    <select id="getLeaveRequestsByStatus" parameterType="String" resultType="com.example.leaveHub.vo.LeaveRequestVO">
+        SELECT 
+            leave_id,
+            user_id,
+            leave_type,
+            start_date,
+            end_date,
+            reason,
+            status,
+            created_at,
+            updated_at
+        FROM leave_request
+        WHERE status = #{status}
+    </select>
+
+    <update id="approveLeaveRequest" parameterType="long">
+        UPDATE leave_request
+        SET status = 'APPROVED', updated_at = SYSDATE
+        WHERE leave_id = #{leaveId} AND status = 'PENDING'
+    </update>
+
+    <update id="rejectLeaveRequest" parameterType="map">
+        UPDATE leave_request
+        SET status = 'REJECTED', updated_at = SYSDATE , reject_reason = #{rejectReason}
+        WHERE leave_id = #{leaveId} AND status = 'PENDING'
+    </update>
+
+</mapper>
