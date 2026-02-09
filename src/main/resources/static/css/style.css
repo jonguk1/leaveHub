@@ -12,9 +12,13 @@ body {
 }
 
 .container {
-    max-width: 1280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 1.5rem;
+    padding: 2rem;
 }
 
 /* Header */
@@ -50,19 +54,27 @@ body {
 
 /* Login Card */
 .login-container {
-    min-height: 100vh;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
+.login-container .card {
+    max-width: 32rem;
+    width: 100%;
+    padding: 4rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+
 .card {
+    width: 100%;
+    max-width: 100%;
     background: white;
     border-radius: 0.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     padding: 2rem;
-    width: 100%;
-    max-width: 28rem;
 }
 
 .card-header {
@@ -309,17 +321,20 @@ textarea {
 
 /* Stats Grid */
 .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 1.5rem;
+    width: 100%;
+    margin-bottom: 2rem;
+    justify-content: space-between;
 }
 
 .stat-card {
+    flex: 1;
     background: white;
+    padding: 1.5rem;
     border-radius: 0.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    padding: 1rem;
+    text-align: center;
 }
 
 .stat-title {

@@ -7,12 +7,12 @@
                 <p class="modal-description">반려 사유를 입력해주세요</p>
             </div>
             <div id="rejectRequestInfo" class="info-box"></div>
-            <form id="rejectForm" action="/admin/reject" method="POST">
-                <input type="hidden" id="leaveId" name="id">
+            <form id="rejectForm" action="/admin/reject" method="POST" onsubmit="return confirmReject()">
+                <input type="hidden" id="leaveId" name="leaveId">
                 
                 <div class="form-group">
                     <label for="rejectReason">반려 사유</label>
-                    <textarea id="rejectReason" name="rejectReason" rows="4" placeholder="반려 사유를 입력하세요" required></textarea>
+                    <textarea id="rejectReason" name="rejectReason" rows="4" placeholder="반려 사유를 입력하세요"></textarea>
                 </div>
 
                 <div class="modal-footer">

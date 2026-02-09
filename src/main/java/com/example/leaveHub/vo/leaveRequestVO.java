@@ -18,4 +18,5 @@ public class LeaveRequestVO {
     private String rejectReason;
     private Date createdAt;
     private Date updatedAt;
+    private UserVO userVO;
 }

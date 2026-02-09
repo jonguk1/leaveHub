@@ -44,14 +44,22 @@ function closeEditModal() {
 }
 
 // 삭제 확인
-function confirmDelete(leaveId) {
-    if (confirmAction('정말 삭제하시겠습니까?')) {
-        // JSP 폼 제출 또는 삭제 링크 클릭
+function confirmDelete(leaveId, event) {
+    if (confirm('정말 삭제하시겠습니까?')) {
         const form = document.getElementById('deleteForm_' + leaveId);
+
         if (form) {
+            // 중복 클릭 방지
+            const btn = event.currentTarget;
+            if (btn) {
+                // 버튼 비활성화
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> 처리 중...';
+            }
+            // 폼 제출
             form.submit();
         } else {
-            console.error("삭제 건을 찾을 수 없습니다 ID:", leaveId);
+            alert("삭제 대상을 찾을 수 없습니다.");
         }
     }
 }

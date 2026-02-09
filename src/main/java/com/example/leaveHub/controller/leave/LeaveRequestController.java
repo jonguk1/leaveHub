@@ -27,13 +27,8 @@ public class LeaveRequestController {
     public String insertLeaveRequest(LeaveRequestVO vo, RedirectAttributes rttr, HttpSession session) {
         // 세션에서 로그인한 유저 정보 꺼내기
         UserVO loginUser = (UserVO) session.getAttribute("loginUser");
-
-        if (loginUser == null) {
-            rttr.addFlashAttribute("errorMsg", "로그인이 필요합니다.");
-            return "redirect:/login";
-        }
-
         vo.setUserId(loginUser.getUserId());
+
         if (vo.getStatus() == null) {
             vo.setStatus(LeaveStatus.PENDING);
         }
@@ -54,11 +49,6 @@ public class LeaveRequestController {
         // 세션에서 로그인한 유저 정보 꺼내기
         UserVO loginUser = (UserVO) session.getAttribute("loginUser");
 
-        if (loginUser == null) {
-            model.addAttribute("errorMsg", "로그인이 필요합니다.");
-            return "redirect:/";
-        }
-
         // 연차 신청 조회 서비스 호출
         try {
             List<LeaveRequestVO> requestList = leaveRequestService.getLeaveRequestsByUserId(loginUser.getUserId());
@@ -75,17 +65,6 @@ public class LeaveRequestController {
     public String updateLeaveRequest(LeaveRequestVO vo, HttpSession session, RedirectAttributes rttr) {
         // 세션에서 로그인한 유저 정보 꺼내기
         UserVO loginUser = (UserVO) session.getAttribute("loginUser");
-
-        if (loginUser == null) {
-            rttr.addFlashAttribute("errorMsg", "로그인이 필요합니다.");
-            return "redirect:/login";
-        }
-
-        System.out.println("수정할 연차 ID: " + vo.getLeaveId());
-        System.out.println("수정할 연차 타입: " + vo.getLeaveType());
-        System.out.println("수정할 시작일: " + vo.getStartDate());
-        System.out.println("수정할 종료일: " + vo.getEndDate());
-        System.out.println("수정할 사유: " + vo.getReason());
 
         // 연차 수정 서비스 호출
         try {

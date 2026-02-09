@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.example.leaveHub.service.admin.AdminService;
 import com.example.leaveHub.vo.LeaveRequestVO;
-import com.example.leaveHub.vo.UserVO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -68,14 +67,6 @@ public class AdminController {
     @PostMapping("/admin/approve")
     public String approveLeaveRequest(@RequestParam Long leaveId, HttpSession session,
             RedirectAttributes rttr) {
-        // 관리자 권한 확인
-        UserVO loginUser = (UserVO) session.getAttribute("loginUser");
-
-        if (!adminService.isAdmin(loginUser)) {
-            rttr.addFlashAttribute("error", "권한이 없습니다.");
-            return "redirect:/admin";
-        }
-
         // 연차 승인 처리
         try {
             adminService.approveLeaveRequest(leaveId);
@@ -91,13 +82,6 @@ public class AdminController {
     @PostMapping("/admin/reject")
     public String rejectLeaveRequest(@RequestParam Long leaveId, HttpSession session,
             @RequestParam String rejectReason, RedirectAttributes rttr) {
-        // 관리자 권한 확인
-        UserVO loginUser = (UserVO) session.getAttribute("loginUser");
-
-        if (!adminService.isAdmin(loginUser)) {
-            rttr.addFlashAttribute("error", "권한이 없습니다.");
-            return "redirect:/admin";
-        }
 
         // 연차 거절 처리
         try {

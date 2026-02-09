@@ -3,6 +3,22 @@
  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.leaveHub.mapper.AdminMapper">
+    <resultMap id="leaveWithUserMap" type="LeaveRequestVO">
+        <id property="leaveId" column="leave_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="leaveType" column="leave_type"/>
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="reason" column="reason"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="rejectReason" column="reject_reason"/>
+        <result property="status" column="status"/> 
+        <result property="createdAt" column="created_at"/>
+        <association property="userVO" javaType="UserVO">
+            <result property="userName" column="user_name"/> 
+        </association>
+    </resultMap>
+
     <select id="isAdmin" parameterType="string" resultType="int">
         SELECT CASE 
                 WHEN EXISTS (
@@ -15,33 +31,39 @@
         FROM dual
     </select>
 
-    <select id="getAllLeaveRequests" resultType="com.example.leaveHub.vo.LeaveRequestVO">
+    <select id="getAllLeaveRequests" resultMap="leaveWithUserMap">
         SELECT 
-            leave_id,
-            user_id,
-            leave_type,
-            start_date,
-            end_date,
-            reason,
-            status,
-            created_at,
-            updated_at
-        FROM leave_request
+            req.leave_id,
+            req.user_id,
+            u.user_name,
+            req.leave_type,
+            req.start_date,
+            req.end_date,
+            req.reason,
+            req.reject_reason,
+            req.status,
+            req.created_at,
+            req.updated_at
+        FROM leave_request req
+        INNER JOIN users u ON req.user_id = u.user_id
     </select>
 
-    <select id="getLeaveRequestsByStatus" parameterType="String" resultType="com.example.leaveHub.vo.LeaveRequestVO">
+    <select id="getLeaveRequestsByStatus" parameterType="String" resultMap="leaveWithUserMap">
         SELECT 
-            leave_id,
-            user_id,
-            leave_type,
-            start_date,
-            end_date,
-            reason,
-            status,
-            created_at,
-            updated_at
-        FROM leave_request
-        WHERE status = #{status}
+            req.leave_id,
+            req.user_id,
+            u.user_name,
+            req.leave_type,
+            req.start_date,
+            req.end_date,
+            req.reason,
+            req.reject_reason,
+            req.status,
+            req.created_at,
+            req.updated_at
+        FROM leave_request req
+        INNER JOIN users u ON req.user_id = u.user_id
+        WHERE req.status = #{status}
     </select>
 
     <update id="approveLeaveRequest" parameterType="long">

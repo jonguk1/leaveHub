@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:import url="/WEB-INF/jsp/common/head.jsp" />
-<script src="/js/employee.js"></script>
+<script src="<c:url value='/js/employee.js' />"></script>
 <c:if test="${not empty message}">
     <script>
         alert("${message}");

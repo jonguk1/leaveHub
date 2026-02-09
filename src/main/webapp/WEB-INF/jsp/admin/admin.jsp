@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
-<script src="/js/admin.js"></script>
+<script src="<c:url value='/js/admin.js' />"></script>
 <c:import url="/WEB-INF/jsp/common/head.jsp" />
 
 <div id="adminScreen">
@@ -83,20 +83,20 @@
                                     <div class="request-header">
                                         <div class="request-info">
                                             <div class="request-title">
-                                                <span class="request-user">직원: ${loginUser.userName}</span>
-                                                <span style="font-weight: 500;">${request.leaveType}</span>
+                                                <span class="request-user">직원: ${request.userVO.userName}</span>
+                                                <span style="font-weight: 500;"><c:out value="${request.leaveType}" /></span>
                                                 <span class="badge badge-${request.status == 'PENDING' ? 'secondary' : request.status == 'APPROVED' ? 'success' : 'danger'}">
-                                                    ${request.status}
+                                                    <c:out value="${request.status}" />
                                                 </span>
                                             </div>
-                                            <div class="request-date">${request.startDate} ~ ${request.endDate}</div>
+                                            <div class="request-date"><c:out value="${request.startDate}" /> ~ <c:out value="${request.endDate}" /></div>
                                         </div>
                                         <c:if test="${request.status == 'PENDING'}">
                                             <div class="request-actions">
                                                 <button type="button" class="btn btn-success btn-sm" 
                                                         onclick="confirmApprove('${request.leaveId}')">✓ 승인</button>
                                                 <button type="button" class="btn btn-danger btn-sm" 
-                                                        onclick="openRejectModal('${request.leaveId}', '${request.leaveType}', '${request.startDate}', '${request.endDate}')">✕ 반려</button>
+                                                        onclick="openRejectModal('${request.leaveId}', '${request.userVO.userName}', '${request.leaveType}', '${request.startDate}', '${request.endDate}')">✕ 반려</button>
                                             </div>
                                             <form id="approveForm_${request.leaveId}" action="/admin/approve" method="POST" style="display:none;">
                                                 <input type="hidden" name="leaveId" value="${request.leaveId}">
@@ -104,12 +104,12 @@
                                         </c:if>
                                     </div>
                                     <div class="request-reason">
-                                        <span class="request-reason-label">사유: </span>${request.reason}
+                                        <span class="request-reason-label">사유: </span><c:out value="${request.reason}" />
                                     </div>
                                     <c:if test="${request.status == 'REJECTED' && not empty request.rejectReason}">
                                         <div class="reject-reason">
                                             <span class="reject-reason-label">반려 사유: </span>
-                                            <span class="reject-reason-text">${request.rejectReason}</span>
+                                            <span class="reject-reason-text"><c:out value="${request.rejectReason}" /></span>
                                         </div>
                                     </c:if>
                                     <div class="request-created">신청일: ${request.createdAt}</div>
