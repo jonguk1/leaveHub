@@ -1,6 +1,7 @@
 package com.example.leaveHub.service.leave;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,10 +27,16 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
         }
     }
 
+    // 내 연차 갯수 조회
+    @Override
+    public int getLeaveRequestCount(String userId) {
+        return leaveRequestMapper.getLeaveRequestCount(userId);
+    }
+
     // 내 연차 조회
     @Override
-    public List<LeaveRequestVO> getLeaveRequestsByUserId(String userId) {
-        return leaveRequestMapper.getLeaveRequestsByUserId(userId);
+    public List<LeaveRequestVO> getLeaveRequestsByUserId(Map<String, Object> params) {
+        return leaveRequestMapper.getLeaveRequestsByUserId(params);
     }
 
     // 내 연차 수정

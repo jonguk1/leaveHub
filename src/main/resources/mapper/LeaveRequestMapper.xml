@@ -23,7 +23,15 @@
             #{status}
         )
     </insert>
-    <select id="getLeaveRequestsByUserId" parameterType="string" resultType="com.example.leaveHub.vo.LeaveRequestVO">
+
+    <select id="getLeaveRequestCount" parameterType="string" resultType="int">
+        SELECT COUNT(*) FROM leave_request
+        <where>
+            user_id = #{userId}
+        </where>
+    </select>
+    
+    <select id="getLeaveRequestsByUserId" parameterType="map" resultType="com.example.leaveHub.vo.LeaveRequestVO">
         SELECT 
             leave_id,
             user_id,
@@ -35,8 +43,15 @@
             created_at,
             updated_at
         FROM leave_request
-        WHERE user_id = #{userId}
+        <where>
+            user_id = #{userId}
+        </where>
+        ORDER BY created_at DESC
+        <if test="limit != null and offset != null">
+            OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
+        </if>
     </select>
+
     <update id="updateLeaveRequest">
         UPDATE leave_request
         SET 
@@ -45,15 +60,19 @@
             end_date = #{vo.endDate},
             reason = #{vo.reason},
             updated_at = SYSDATE
-        WHERE 
+        <where> 
             leave_id = #{vo.leaveId} 
             AND user_id = #{userId} 
             AND status = 'PENDING'
+        </where>
     </update>
+
     <delete id="deleteLeaveRequest" parameterType="long">
         DELETE FROM leave_request
-        WHERE leave_id = #{leaveId} 
-              AND status = 'PENDING'
+        <where>
+            leave_id = #{leaveId} 
+            AND status = 'PENDING'
+        </where>
     </delete>
 
 

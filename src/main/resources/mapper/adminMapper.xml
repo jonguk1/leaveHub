@@ -19,6 +19,23 @@
         </association>
     </resultMap>
 
+     <sql id="leaveBaseSql">
+        SELECT 
+            req.leave_id,
+            req.user_id,
+            u.user_name,
+            req.leave_type,
+            req.start_date,
+            req.end_date,
+            req.reason,
+            req.reject_reason,
+            req.status,
+            req.created_at,
+            req.updated_at
+        FROM leave_request req
+        INNER JOIN users u ON req.user_id = u.user_id
+    </sql>
+
     <select id="isAdmin" parameterType="string" resultType="int">
         SELECT CASE 
                 WHEN EXISTS (
@@ -31,51 +48,44 @@
         FROM dual
     </select>
 
-    <select id="getAllLeaveRequests" resultMap="leaveWithUserMap">
-        SELECT 
-            req.leave_id,
-            req.user_id,
-            u.user_name,
-            req.leave_type,
-            req.start_date,
-            req.end_date,
-            req.reason,
-            req.reject_reason,
-            req.status,
-            req.created_at,
-            req.updated_at
-        FROM leave_request req
-        INNER JOIN users u ON req.user_id = u.user_id
+    <select id="getAllLeaveRequests" parameterType="map" resultMap="leaveWithUserMap">
+        <include refid="leaveBaseSql"/>
+        <where>
+            <if test="status != null and status != ''">
+            AND req.status = #{status}
+            </if>
+        </where>
+        ORDER BY req.created_at DESC
+
+        <if test="limit != null and offset != null">
+            OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
+        </if>
     </select>
 
-    <select id="getLeaveRequestsByStatus" parameterType="String" resultMap="leaveWithUserMap">
-        SELECT 
-            req.leave_id,
-            req.user_id,
-            u.user_name,
-            req.leave_type,
-            req.start_date,
-            req.end_date,
-            req.reason,
-            req.reject_reason,
-            req.status,
-            req.created_at,
-            req.updated_at
-        FROM leave_request req
-        INNER JOIN users u ON req.user_id = u.user_id
-        WHERE req.status = #{status}
+    <select id="getLeaveStatusCounts" resultType="int">
+        SELECT COUNT(*) 
+        FROM leave_request
+        <where>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+        </where>
     </select>
 
     <update id="approveLeaveRequest" parameterType="long">
         UPDATE leave_request
         SET status = 'APPROVED', updated_at = SYSDATE
-        WHERE leave_id = #{leaveId} AND status = 'PENDING'
+        <where>
+            leave_id = #{leaveId} AND status = 'PENDING'
+        </where>
     </update>
 
     <update id="rejectLeaveRequest" parameterType="map">
         UPDATE leave_request
         SET status = 'REJECTED', updated_at = SYSDATE , reject_reason = #{rejectReason}
-        WHERE leave_id = #{leaveId} AND status = 'PENDING'
+        <where>
+            leave_id = #{leaveId} AND status = 'PENDING'
+        </where>
     </update>
 
 </mapper>

@@ -135,6 +135,44 @@
                                     </div>
                                 </c:forEach>
                             </c:if>
+                            <!-- 페이징 -->
+                            <div class="pagination">
+                                <c:if test="${pageMaker.total > 0}">
+                                    <div class="pagination-info">
+                                        ${pageMaker.cri.pageNum} / ${pageMaker.realEnd} 페이지
+                                    </div>
+                                    
+                                    <div class="pagination-buttons">
+                                        <a href="/employee?pageNum=1" class="pagination-btn ${pageMaker.cri.pageNum == 1 ? 'disabled' : ''}">
+                                            ⟨⟨
+                                        </a>
+                                        
+                                        <c:if test="${pageMaker.prev}">
+                                            <a href="/employee?pageNum=${pageMaker.startPage - 1}" class="pagination-btn">
+                                                ⟨
+                                            </a>
+                                        </c:if>
+                                        
+                                        <c:forEach var="num" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
+                                            <a href="/employee?pageNum=${num}" 
+                                            class="pagination-btn ${num == pageMaker.cri.pageNum ? 'active' : ''}">
+                                                ${num}
+                                            </a>
+                                        </c:forEach>
+                                        
+                                        <c:if test="${pageMaker.next}">
+                                            <a href="/employee?pageNum=${pageMaker.endPage + 1}" class="pagination-btn">
+                                                ⟩
+                                            </a>
+                                        </c:if>
+                                        
+                                        <c:set var="realEnd" value="${Math.ceil(pageMaker.total / pageMaker.cri.amount).intValue()}" />
+                                        <a href="/employee?pageNum=${realEnd}" class="pagination-btn ${pageMaker.cri.pageNum == realEnd ? 'disabled' : ''}">
+                                            ⟩⟩
+                                        </a>
+                                    </div>
+                                </c:if>
+                            </div>
                         </div>
                     </div>
                 </div>

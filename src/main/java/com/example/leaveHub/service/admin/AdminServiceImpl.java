@@ -1,6 +1,8 @@
 package com.example.leaveHub.service.admin;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,16 +31,18 @@ public class AdminServiceImpl implements AdminService {
         return result == 1;
     }
 
-    // 전체 연차 요청 조회
+    // 상황별 연차 요청 수
     @Override
-    public List<LeaveRequestVO> getAllLeaveRequests() {
-        return adminMapper.getAllLeaveRequests();
+    public int getLeaveStatusCounts(String status) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("status", status);
+        return adminMapper.getLeaveStatusCounts(status);
     }
 
-    // 상태별 연차 요청 조회
+    // 전체 연차 요청 조회
     @Override
-    public List<LeaveRequestVO> getLeaveRequestsByStatus(String status) {
-        return adminMapper.getLeaveRequestsByStatus(status);
+    public List<LeaveRequestVO> getAllLeaveRequests(Map<String, Object> params) {
+        return adminMapper.getAllLeaveRequests(params);
     }
 
     // 연차 요청 승인

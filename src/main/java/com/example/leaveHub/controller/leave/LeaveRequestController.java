@@ -1,11 +1,15 @@
 package com.example.leaveHub.controller.leave;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
+import com.example.leaveHub.common.Criteria;
 import com.example.leaveHub.constant.LeaveStatus;
+import com.example.leaveHub.dto.PageDTO;
 import com.example.leaveHub.service.leave.LeaveRequestService;
 import com.example.leaveHub.vo.LeaveRequestVO;
 import com.example.leaveHub.vo.UserVO;
@@ -45,14 +49,27 @@ public class LeaveRequestController {
 
     // 내 연차 신청 조회
     @GetMapping("/employee")
-    public String getMyLeaveRequests(HttpSession session, Model model) {
+    public String getMyLeaveRequests(Criteria cri, HttpSession session, Model model) {
         // 세션에서 로그인한 유저 정보 꺼내기
         UserVO loginUser = (UserVO) session.getAttribute("loginUser");
 
         // 연차 신청 조회 서비스 호출
         try {
-            List<LeaveRequestVO> requestList = leaveRequestService.getLeaveRequestsByUserId(loginUser.getUserId());
+            // 페이징 처리된 전체 연차 요청 조회
+            Map<String, Object> params = new HashMap<>();
+            params.put("userId", loginUser.getUserId());
+            params.put("offset", cri.getOffset());
+            params.put("limit", cri.getAmount());
+
+            System.out.println(cri.getOffset());
+            System.out.println(cri.getAmount());
+
+            int total = leaveRequestService.getLeaveRequestCount(loginUser.getUserId());
+
+            List<LeaveRequestVO> requestList = leaveRequestService.getLeaveRequestsByUserId(params);
             model.addAttribute("requestList", requestList);
+            model.addAttribute("pageMaker", new PageDTO(cri, total));
+
         } catch (Exception e) {
             model.addAttribute("errorMsg", "연차 신청 조회 중 오류가 발생했습니다: " + e.getMessage());
 

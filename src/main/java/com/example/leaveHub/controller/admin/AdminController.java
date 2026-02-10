@@ -1,11 +1,15 @@
 package com.example.leaveHub.controller.admin;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.example.leaveHub.common.Criteria;
+import com.example.leaveHub.dto.PageDTO;
 import com.example.leaveHub.service.admin.AdminService;
 import com.example.leaveHub.vo.LeaveRequestVO;
 
@@ -23,41 +27,27 @@ public class AdminController {
 
     // 관리자 메인 페이지
     @GetMapping("/admin")
-    public String adminMain(@RequestParam(required = false) String status, Model model) {
-        List<LeaveRequestVO> list;
+    public String adminMain(Criteria cri, @RequestParam(required = false) String status, Model model,
+            HttpSession session) {
+        // 페이징 처리된 전체 연차 요청 조회
+        Map<String, Object> params = new HashMap<>();
+        params.put("status", status);
+        params.put("offset", cri.getOffset());
+        params.put("limit", cri.getAmount());
 
-        // 🔹 status 없으면 전체
-        if (status == null) {
-            list = adminService.getAllLeaveRequests();
-        } else {
-            list = adminService.getLeaveRequestsByStatus(status);
-        }
+        int total = adminService.getLeaveStatusCounts(null);
+        int pendingCount = adminService.getLeaveStatusCounts("PENDING");
+        int approvedCount = adminService.getLeaveStatusCounts("APPROVED");
+        int rejectedCount = adminService.getLeaveStatusCounts("REJECTED");
 
-        List<LeaveRequestVO> allList = adminService.getAllLeaveRequests();
-
-        int countAll = allList.size();
-        int countPending = 0;
-        int countApproved = 0;
-        int countRejected = 0;
-
-        for (LeaveRequestVO req : allList) {
-            String reqStatus = req.getStatus().name();
-
-            if ("PENDING".equals(reqStatus))
-                countPending++;
-            else if ("APPROVED".equals(reqStatus))
-                countApproved++;
-            else if ("REJECTED".equals(reqStatus))
-                countRejected++;
-        }
-
-        model.addAttribute("leaveList", list);
-        model.addAttribute("currentStatus", status);
-
-        model.addAttribute("countAll", countAll);
-        model.addAttribute("countPending", countPending);
-        model.addAttribute("countApproved", countApproved);
-        model.addAttribute("countRejected", countRejected);
+        List<LeaveRequestVO> leaveRequestList = adminService.getAllLeaveRequests(params);
+        model.addAttribute("leaveRequestList", leaveRequestList);
+        model.addAttribute("pageMaker", new PageDTO(cri, total));
+        model.addAttribute("currentStatus", (status == null || status.isEmpty()) ? "ALL" : status);
+        model.addAttribute("countAll", total);
+        model.addAttribute("countPending", pendingCount);
+        model.addAttribute("countApproved", approvedCount);
+        model.addAttribute("countRejected", rejectedCount);
 
         return "admin/admin";
 

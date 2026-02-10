@@ -74,19 +74,20 @@
                     </div>
 
                     <div id="adminRequestList">
-                        <c:if test="${empty leaveList}">
+                        <c:if test="${empty leaveRequestList}">
                             <div class="empty-state">신청 내역이 없습니다</div>
                         </c:if>
-                        <c:if test="${not empty leaveList}">
-                            <c:forEach var="request" items="${leaveList}">
+                        <c:if test="${not empty leaveRequestList}">
+                            <c:forEach var="request" items="${leaveRequestList}">
                                 <div class="request-item">
                                     <div class="request-header">
                                         <div class="request-info">
                                             <div class="request-title">
                                                 <span class="request-user">직원: ${request.userVO.userName}</span>
                                                 <span style="font-weight: 500;"><c:out value="${request.leaveType}" /></span>
-                                                <span class="badge badge-${request.status == 'PENDING' ? 'secondary' : request.status == 'APPROVED' ? 'success' : 'danger'}">
-                                                    <c:out value="${request.status}" />
+                                                <c:set var="statusClass" value="${request.status == 'PENDING' ? 'secondary' : request.status == 'APPROVED' ? 'success' : 'danger'}" />
+                                                <span class="badge badge-${statusClass}">
+                                                    ${request.status.description}
                                                 </span>
                                             </div>
                                             <div class="request-date"><c:out value="${request.startDate}" /> ~ <c:out value="${request.endDate}" /></div>
@@ -116,6 +117,44 @@
                                 </div>
                             </c:forEach>
                         </c:if>
+                        <div class="pagination">
+                            <c:if test="${pageMaker.total > 0}">
+                                <div class="pagination-info">
+                                    현재 페이지: <strong>${pageMaker.cri.pageNum}</strong> / 전체 데이터: <strong>${pageMaker.total}</strong>건
+                                </div>
+                                
+                                <div class="pagination-buttons">
+                                    <a href="/admin?pageNum=1&status=${currentStatus}" 
+                                    class="pagination-btn ${pageMaker.cri.pageNum == 1 ? 'disabled' : ''}" title="처음으로">
+                                        ⟨⟨
+                                    </a>
+                                    
+                                    <c:if test="${pageMaker.prev}">
+                                        <a href="/admin?pageNum=${pageMaker.startPage - 1}&status=${currentStatus}" class="pagination-btn">
+                                            ⟨
+                                        </a>
+                                    </c:if>
+                                    
+                                    <c:forEach var="num" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
+                                        <a href="/admin?pageNum=${num}&status=${currentStatus}" 
+                                        class="pagination-btn ${num == pageMaker.cri.pageNum ? 'active' : ''}">
+                                            ${num}
+                                        </a>
+                                    </c:forEach>
+                                    
+                                    <c:if test="${pageMaker.next}">
+                                        <a href="/admin?pageNum=${pageMaker.endPage + 1}&status=${currentStatus}" class="pagination-btn">
+                                            ⟩
+                                        </a>
+                                    </c:if>
+                                    
+                                    <a href="/admin?pageNum=${pageMaker.realEnd}&status=${currentStatus}" 
+                                        class="pagination-btn ${pageMaker.cri.pageNum == pageMaker.realEnd ? 'disabled' : ''}">
+                                        ⟩⟩
+                                    </a>
+                                </div>
+                            </c:if>
+                        </div>
                     </div>
                 </div>
             </div>
