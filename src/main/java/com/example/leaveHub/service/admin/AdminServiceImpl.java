@@ -64,4 +64,13 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+    // 회원 승인
+    @Override
+    public void isApproved(String userId) {
+        int result = adminMapper.isApproved(userId);
+        if (result == 0) {
+            throw new RuntimeException("회원 승인에 실패했습니다. ID: " + userId);
+        }
+    }
+
 }

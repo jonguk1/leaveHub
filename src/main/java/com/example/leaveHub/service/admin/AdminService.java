@@ -18,4 +18,6 @@ public interface AdminService {
 
     void rejectLeaveRequest(Long leaveId, String rejectReason);
 
+    void isApproved(String userId);
+
 }

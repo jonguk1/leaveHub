@@ -21,6 +21,9 @@
                 </div>
                 <button type="submit" class="btn btn-primary btn-full">로그인</button>
             </form>
+            <div style="margin-top: 10px;">
+                <a href="/register" class="btn btn-primary btn-full">회원가입</a>
+            </div>
             <c:if test="${not empty errorMsg}">
                 <div style="color: #e74c3c; background-color: #fceae9; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 0.85rem; text-align: center; border: 1px solid #f5c6cb;">
                     ${errorMsg}

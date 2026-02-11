@@ -25,4 +25,7 @@ public interface AdminMapper {
     // 연차 요청 거절
     int rejectLeaveRequest(@Param("leaveId") Long leaveId, @Param("rejectReason") String rejectReason);
 
+    // 가입 승인
+    int isApproved(@Param("userId") String userId);
+
 }

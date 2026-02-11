@@ -88,4 +88,12 @@
         </where>
     </update>
 
+    <update id="isApproved" parameterType="String">
+        UPDATE users
+        SET enabled = 1
+        <where>
+            user_id = #{userId}
+        </where>
+    </update>
+
 </mapper>

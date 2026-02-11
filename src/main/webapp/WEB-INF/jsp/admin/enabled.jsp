@@ -36,63 +36,30 @@
                     <!-- 통계 -->
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-title">연차 전체 신청</div>
-                            <div class="stat-value" id="statTotal"> ${countAll}</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-title">대기 중</div>
-                            <div class="stat-value yellow" id="statPending">${countPending}</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-title">승인됨</div>
-                            <div class="stat-value green" id="statApproved">${countApproved}</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-title">반려됨</div>
-                            <div class="stat-value red" id="statRejected">${countRejected}</div>
+                            <div class="stat-title">회원가입 전체 신청</div>
+                            <div class="stat-value" id="statTotal"></div>
                         </div>
                     </div>
                     <div class="card">
-                        <h2 style="margin-bottom: 0.5rem;">전체 연차 신청 내역</h2>
-                        <p class="card-description" style="margin-bottom: 1.5rem;">직원들의 연차 신청을 승인 또는 반려할 수 있습니다</p>
+                        <h2 style="margin-bottom: 0.5rem;">전체 회원가입 신청 내역</h2>
+                        <p class="card-description" style="margin-bottom: 1.5rem;">직원들의 가입 신청을 승인할 수 있습니다</p>
 
                         <div class="tabs">
                             <div class="tab-list">
                                 <a href="${pageContext.request.contextPath}/admin">
                                     <button type="button"
                                         class="tab-button ${currentStatus == 'ALL' ? 'active' : ''}">
-                                        전체 (<span>${countAll}</span>)
-                                    </button>
-                                </a>
-
-                                <a href="${pageContext.request.contextPath}/admin?status=PENDING">
-                                    <button type="button"
-                                        class="tab-button ${currentStatus == 'PENDING' ? 'active' : ''}">
-                                        대기 (<span>${countPending}</span>)
-                                    </button>
-                                </a>
-
-                                <a href="${pageContext.request.contextPath}/admin?status=APPROVED">
-                                    <button type="button"
-                                        class="tab-button ${currentStatus == 'APPROVED' ? 'active' : ''}">
-                                        승인 (<span>${countApproved}</span>)
-                                    </button>
-                                </a>
-
-                                <a href="${pageContext.request.contextPath}/admin?status=REJECTED">
-                                    <button type="button"
-                                        class="tab-button ${currentStatus == 'REJECTED' ? 'active' : ''}">
-                                        반려 (<span>${countRejected}</span>)
+                                        전체 (<span>1</span>)
                                     </button>
                                 </a>
                             </div>
 
                             <div id="adminRequestList">
-                                <c:if test="${empty leaveRequestList}">
+                                <%-- <c:if test="${empty leaveRequestList}"> --%>
                                     <div class="empty-state">신청 내역이 없습니다</div>
-                                </c:if>
-                                <c:if test="${not empty leaveRequestList}">
-                                    <c:forEach var="request" items="${leaveRequestList}">
+                                <%-- </c:if> --%>
+                                <%-- <c:if test="${not empty leaveRequestList}">
+                                    <c:forEach var="request" items="${leaveRequestList}"> --%>
                                         <div class="request-item">
                                             <div class="request-header">
                                                 <div class="request-info">
@@ -118,29 +85,14 @@
                                                     </form>
                                                 </c:if>
                                             </div>
-                                            <div class="request-reason">
-                                                <span class="request-reason-label">사유: </span><c:out value="${request.reason}" />
-                                            </div>
-                                            <c:if test="${request.status == 'REJECTED' && not empty request.rejectReason}">
-                                                <div class="reject-reason">
-                                                    <span class="reject-reason-label">반려 사유: </span>
-                                                    <span class="reject-reason-text"><c:out value="${request.rejectReason}" /></span>
-                                                </div>
-                                            </c:if>
-                                            <div class="request-created">신청일: ${request.createdAt}</div>
+                                            <div class="request-created">신청일:</div>
                                         </div>
-                                    </c:forEach>
-                                </c:if>
+                                    <%-- </c:forEach>
+                                </c:if> --%>
                                 <div class="pagination">
                                     <c:if test="${pageMaker.total > 0}">
                                         <div class="pagination-info">
                                             현재 페이지: <strong>${pageMaker.cri.pageNum}</strong> / 
-                                            <c:choose>
-                                                <c:when test="${currentStatus == 'PENDING'}">대기</c:when>
-                                                <c:when test="${currentStatus == 'APPROVED'}">승인</c:when>
-                                                <c:when test="${currentStatus == 'REJECTED'}">반려</c:when>
-                                                <c:otherwise>전체</c:otherwise>
-                                            </c:choose>
                                             <strong>${pageMaker.total}</strong>건
                                         </div>
                                         

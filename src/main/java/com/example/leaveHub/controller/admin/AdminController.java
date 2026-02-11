@@ -35,7 +35,8 @@ public class AdminController {
         params.put("offset", cri.getOffset());
         params.put("limit", cri.getAmount());
 
-        int total = adminService.getLeaveStatusCounts(null);
+        int total = adminService.getLeaveStatusCounts(status);
+        int countAll = adminService.getLeaveStatusCounts(null);
         int pendingCount = adminService.getLeaveStatusCounts("PENDING");
         int approvedCount = adminService.getLeaveStatusCounts("APPROVED");
         int rejectedCount = adminService.getLeaveStatusCounts("REJECTED");
@@ -44,7 +45,7 @@ public class AdminController {
         model.addAttribute("leaveRequestList", leaveRequestList);
         model.addAttribute("pageMaker", new PageDTO(cri, total));
         model.addAttribute("currentStatus", (status == null || status.isEmpty()) ? "ALL" : status);
-        model.addAttribute("countAll", total);
+        model.addAttribute("countAll", countAll);
         model.addAttribute("countPending", pendingCount);
         model.addAttribute("countApproved", approvedCount);
         model.addAttribute("countRejected", rejectedCount);
@@ -83,6 +84,19 @@ public class AdminController {
             return "redirect:/admin";
         }
 
+    }
+
+    // 회원 승인
+    @PostMapping("/admin/approveUser")
+    public String approveUser(@RequestParam("userId") String userId, RedirectAttributes rttr) {
+        try {
+            // 서비스에서 해당 ID의 enabled를 1로 바꾸는 로직 실행
+            adminService.isApproved(userId);
+            rttr.addFlashAttribute("msg", userId + "승인되었습니다.");
+        } catch (Exception e) {
+            rttr.addFlashAttribute("error", "승인 처리 중 오류가 발생했습니다.");
+        }
+        return "redirect:/admin";
     }
 
 }

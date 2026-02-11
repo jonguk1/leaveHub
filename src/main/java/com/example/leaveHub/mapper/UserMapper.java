@@ -9,4 +9,10 @@ import com.example.leaveHub.vo.UserVO;
 public interface UserMapper {
     // ID와 PW로 사용자 조회
     UserVO login(@Param("userId") String userId, @Param("password") String password);
+
+    // 회원가입
+    int register(UserVO userVO);
+
+    // 중복체크
+    int existsByUserId(@Param("userId") String userId);
 }

@@ -10,7 +10,10 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -43,6 +46,31 @@ public class UserController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/";
+    }
+
+    // 회원가입 기능
+    @PostMapping("/register")
+    public String register(UserVO userVO, RedirectAttributes rttr) {
+        try {
+            userService.register(userVO);
+            rttr.addFlashAttribute("message", "회원가입이 성공하였습니다.관리자의 승인을 기다리세요");
+        } catch (Exception e) {
+            rttr.addFlashAttribute("errorMsg", "회원가입중 오류가 발생했습니다: " + e.getMessage());
+        }
+        return "redirect:/";
+    }
+
+    // ID 중복체크
+    @GetMapping("/checkId")
+    @ResponseBody // 페이지 이동이 아닌 데이터를 반환하기 위함
+    public int checkId(@RequestParam("userId") String userId) {
+        return userService.existsByUserId(userId);
+    }
+
+    // 회원가입 페이지 이동
+    @GetMapping("/register")
+    public String registerMain() {
+        return "auth/register";
     }
 
 }

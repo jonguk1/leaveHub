@@ -61,9 +61,6 @@ public class LeaveRequestController {
             params.put("offset", cri.getOffset());
             params.put("limit", cri.getAmount());
 
-            System.out.println(cri.getOffset());
-            System.out.println(cri.getAmount());
-
             int total = leaveRequestService.getLeaveRequestCount(loginUser.getUserId());
 
             List<LeaveRequestVO> requestList = leaveRequestService.getLeaveRequestsByUserId(params);

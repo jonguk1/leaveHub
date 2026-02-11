@@ -11,5 +11,5 @@ public class UserVO {
     private String password;
     private String role;
     private Date createdAt;
-
+    private boolean enabled;
 }

@@ -1,5 +1,8 @@
 package com.example.leaveHub.common;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -27,19 +30,40 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         // 로그인 여부 확인
         if (loginUser == null) {
-            System.out.println("aaaaaa");
-            response.sendRedirect("/");
+            alertAndRedirect(response, "로그인이 필요합니다.", "/");
+            return false;
+        }
+
+        // 승인 여부 확인
+        if (!loginUser.isEnabled()) {
+            // 미승인 사용자의 세션 제거
+            if (session != null) {
+                session.invalidate();
+            }
+            alertAndRedirect(response, "관리자의 승인이 필요한 계정입니다.", "/");
             return false;
         }
 
         // 관리자 권한 확인
         if (uri.contains("/admin")) {
             if (!"ADMIN".equals(loginUser.getRole())) {
-                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                alertAndRedirect(response, "관리자 전용 메뉴입니다. 접근 권한이 없습니다.", "/");
                 return false;
             }
         }
 
         return true;
+    }
+
+    // 알림창 띄우기
+    private void alertAndRedirect(HttpServletResponse response, String msg, String url) throws IOException {
+        response.setContentType("text/html; charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        out.println("<script>");
+        out.println("alert('" + msg + "');");
+        out.println("location.href='" + url + "';");
+        out.println("</script>");
+        out.flush();
+        out.close(); // 자원 해제
     }
 }

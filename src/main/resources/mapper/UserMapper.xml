@@ -8,9 +8,35 @@
            user_name,
            password,
            role,
-           created_at
+           created_at,
+           enabled
     FROM users
     WHERE user_id = #{userId}
       AND password = #{password}
+</select>
+<insert id= "register" parameterType="com.example.leaveHub.vo.UserVO" >
+   INSERT INTO users
+   (
+       user_id,
+       user_name,
+       password,
+       role,
+       created_at,
+       enabled
+   )
+   VALUES
+   (
+       #{userId},
+       #{userName},
+       #{password},
+       'USER',
+       SYSDATE,
+       #{enabled}
+   )
+</insert>
+<select id="existsByUserId" parameterType="String" resultType="int">
+    SELECT COUNT(*)
+    FROM users
+    WHERE user_id = #{userId}
 </select>
 </mapper>
