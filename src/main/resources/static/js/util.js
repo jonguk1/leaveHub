@@ -50,4 +50,14 @@ function resetForm(formId) {
     if (form) {
         form.reset();
     }
-}   
+}
+
+//공통 메시지
+function checkServerMessage(msg, error) {
+    if (msg && msg.trim() !== "") {
+        alert(msg);
+    }
+    if (error && error.trim() !== "") {
+        alert(error);
+    }
+}

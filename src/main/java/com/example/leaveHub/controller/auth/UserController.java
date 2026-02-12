@@ -73,4 +73,52 @@ public class UserController {
         return "auth/register";
     }
 
+    // 회원수정 페이지 이동
+    @GetMapping("/update")
+    public String updateMain(String userId, HttpSession session, Model model) {
+        UserVO loginUser = (UserVO) session.getAttribute("loginUser");
+        UserVO user = userService.getUserById(loginUser.getUserId());
+        model.addAttribute("user", user);
+        return "auth/update";
+    }
+
+    // 회원수정
+    @PostMapping("/user/update")
+    public String updateUser(UserVO userVO, String currentPassword, HttpSession session, RedirectAttributes rttr) {
+        // 세션에서 로그인한 유저 정보 확인
+        UserVO loginUser = (UserVO) session.getAttribute("loginUser");
+        userVO.setUserId(loginUser.getUserId());
+
+        // 회원 수정 서비스 호출
+        try {
+            userService.updateUser(userVO, currentPassword);
+            // 세션 동기화 (화면에 즉시 반영하기 위함)
+            loginUser.setUserName(userVO.getUserName());
+            rttr.addFlashAttribute("message", "정보가 성공적으로 수정되었습니다.");
+        } catch (Exception e) {
+            rttr.addFlashAttribute("errorMsg", "수정 중 오류 발생: " + e.getMessage());
+        }
+
+        return "ADMIN".equals(loginUser.getRole()) ? "redirect:/admin" : "redirect:/employee";
+    }
+
+    // 회원탈퇴
+    @PostMapping("/user/delete")
+    public String deleteUser(HttpSession session, RedirectAttributes rttr) {
+        // 세션에서 로그인한 유저 정보 꺼내기
+        UserVO loginUser = (UserVO) session.getAttribute("loginUser");
+
+        // 회원 탈퇴 서비스 호출
+        try {
+            String userId = loginUser.getUserId();
+            userService.deleteUser(userId);
+            session.invalidate();
+            rttr.addFlashAttribute("message", "탈퇴가 성공적으로 처리되었습니다.");
+            return "redirect:/";
+        } catch (Exception e) {
+            rttr.addFlashAttribute("errorMsg", "삭제 오류가 발생했습니다: " + e.getMessage());
+            return "ADMIN".equals(loginUser.getRole()) ? "redirect:/admin" : "redirect:/employee";
+        }
+    }
+
 }

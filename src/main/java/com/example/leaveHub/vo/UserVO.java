@@ -12,4 +12,6 @@ public class UserVO {
     private String role;
     private Date createdAt;
     private boolean enabled;
+    private Date updatedAt;
+    private Date deletedAt;
 }

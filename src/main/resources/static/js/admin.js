@@ -5,7 +5,7 @@ function switchAdminTab(tabName) {
     switchTab(tabName, '#adminScreen .tabs');
 }
 
-// 승인 확인
+// 연차 승인 확인
 function confirmApprove(leaveId) {
     if (confirmAction('이 신청을 승인하시겠습니까?')) {
         const form = document.getElementById('approveForm_' + leaveId);
@@ -56,4 +56,24 @@ function confirmReject() {
 function closeRejectModal() {
     closeModal('rejectModal');
     resetForm('rejectForm');
+}
+
+// 회원 가입 승인 확인
+function approveUser(userId) {
+    if (confirmAction(' 사용자의 가입을 승인하시겠습니까?')) {
+        const form = document.getElementById('approveForm_' + userId);
+        if (form) {
+            form.submit();
+        }
+    }
+}
+
+// 회원 가입 거절 확인
+function rejectUser(userId, userName) {
+    if (confirmAction(userName + '님의 가입 요청을 거절하시겠습니까?')) {
+        const form = document.getElementById('rejectForm_' + userId);
+        if (form) {
+            form.submit();
+        }
+    }
 }

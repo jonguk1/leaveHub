@@ -9,4 +9,10 @@ public interface UserService {
 
     int existsByUserId(String userId);
 
+    void updateUser(UserVO userVO, String currentPassword);
+
+    void deleteUser(String userId);
+
+    UserVO getUserById(String userId);
+
 }

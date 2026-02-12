@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.example.leaveHub.common.Criteria;
 import com.example.leaveHub.dto.PageDTO;
 import com.example.leaveHub.service.admin.AdminService;
+import com.example.leaveHub.service.user.UserService;
 import com.example.leaveHub.vo.LeaveRequestVO;
+import com.example.leaveHub.vo.UserVO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AdminController {
 
     private final AdminService adminService;
+    private final UserService userService;
 
     // 관리자 메인 페이지
     @GetMapping("/admin")
@@ -96,7 +99,40 @@ public class AdminController {
         } catch (Exception e) {
             rttr.addFlashAttribute("error", "승인 처리 중 오류가 발생했습니다.");
         }
-        return "redirect:/admin";
+        return "redirect:/admin/enabledUser";
+    }
+
+    // 회원 거절
+    @PostMapping("/admin/rejectUser")
+    public String rejectUser(String userId, String userName, HttpSession session, RedirectAttributes rttr) {
+        try {
+            // 회원 거절(삭제)
+            userService.deleteUser(userId);
+            rttr.addFlashAttribute("message", userName + " 님의 가입 요청을 거절했습니다.");
+        } catch (Exception e) {
+            rttr.addFlashAttribute("errorMsg", "처리 중 오류가 발생했습니다.");
+        }
+
+        return "redirect:/admin/enabledUser";
+    }
+
+    // 승인 대기 유저 조회 (페이징)
+    @GetMapping("/admin/enabledUser")
+    public String selectUsersByEnabled(Criteria cri, HttpSession session, Model model) {
+        // 페이징처리
+        Map<String, Object> params = new HashMap<>();
+        params.put("offset", cri.getOffset());
+        params.put("limit", cri.getAmount());
+
+        // 서비스 호출
+        List<UserVO> enabledUserList = adminService.selectUsersByEnabled(params);
+        int total = adminService.countByEnabledStatus();
+
+        model.addAttribute("userList", enabledUserList);
+        model.addAttribute("pageMaker", new PageDTO(cri, total));
+        model.addAttribute("total", total);
+
+        return "admin/enabled";
     }
 
 }

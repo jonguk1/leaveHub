@@ -20,4 +20,8 @@ public interface AdminService {
 
     void isApproved(String userId);
 
+    List<UserVO> selectUsersByEnabled(Map<String, Object> params);
+
+    int countByEnabledStatus();
+
 }

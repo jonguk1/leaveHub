@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.example.leaveHub.vo.LeaveRequestVO;
+import com.example.leaveHub.vo.UserVO;
 
 @Mapper
 public interface AdminMapper {
@@ -27,5 +28,11 @@ public interface AdminMapper {
 
     // 가입 승인
     int isApproved(@Param("userId") String userId);
+
+    // 승인 대기 유저 조회 (페이징)
+    List<UserVO> selectUsersByEnabled(Map<String, Object> params);
+
+    // 승인 대기 유저 요청 수
+    int countByEnabledStatus();
 
 }

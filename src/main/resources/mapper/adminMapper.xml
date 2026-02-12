@@ -96,4 +96,28 @@
         </where>
     </update>
 
+    <select id="selectUsersByEnabled" parameterType="map" resultType="com.example.leaveHub.vo.UserVO">
+        SELECT user_id,
+               user_name,
+               created_at
+        FROM users
+        <where>
+            enabled = 0
+            AND deleted_at IS NULL
+        </where>
+        ORDER BY created_at asc
+        <if test="limit != null and offset != null">
+            OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
+        </if>
+    </select>
+
+    <select id="countByEnabledStatus" resultType="int">
+        SELECT COUNT(*)
+        FROM users
+        <where>
+            enabled = 0
+            AND deleted_at IS NULL
+        </where>
+    </select>
+
 </mapper>

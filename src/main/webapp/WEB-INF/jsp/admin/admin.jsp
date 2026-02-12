@@ -11,7 +11,11 @@
                     <span>연차 관리 시스템 (관리자)</span>
                 </div>
                 <div class="header-user">
-                    <span id="adminUserName"><strong><c:out value="${loginUser.userName}" /></strong>님 환영합니다</span>
+                    <span id="adminUserName">
+                        <a href="/update" style="text-decoration: none; color: inherit; cursor: pointer;">
+                            <strong><c:out value="${loginUser.userName}" /></strong>님 환영합니다
+                        </a>
+                    </span>
                     <a href="/logout" class="btn btn-outline btn-sm">로그아웃</a>
                 </div>
             </div>
@@ -24,7 +28,7 @@
                             <span>연차 신청 관리</span>
                         </button>
                     </a>
-                    <a href="/admin/userManagement" style="text-decoration: none;">
+                    <a href="/admin/enabledUser" style="text-decoration: none;">
                         <button type="button" class="sidebar-item">
                             <span> 회원가입 승인</span>
                         </button>

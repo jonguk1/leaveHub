@@ -40,13 +40,17 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
 
-    // 비밀번호 규칙: 8자 이상, 영문+숫자 포함
+    /**
+     * 비밀번호 규칙 검사 (8자 이상, 영문+숫자)
+     */
     function validatePasswordRule(pw) {
         const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
         return regex.test(pw);
     }
 
-    //비밀번호 일치체크
+    /**
+     * 비밀번호 일치체크
+     */
     function checkPasswordMatch() {
         if (passwordConfirm.value === "") {
             pwMessage.style.display = "none";
@@ -69,6 +73,9 @@ document.addEventListener("DOMContentLoaded", function () {
     password.addEventListener("input", checkPasswordMatch);
     passwordConfirm.addEventListener("input", checkPasswordMatch);
 
+    /**
+     * 최종체크
+     */
     form.addEventListener("submit", function (e) {
 
         console.log("이벤트 객체 확인:", e);
@@ -109,6 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
     });
+
 
 });
 

@@ -73,4 +73,16 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+    // 승인 대기 유저 조회 (페이징)
+    @Override
+    public List<UserVO> selectUsersByEnabled(Map<String, Object> params) {
+        return adminMapper.selectUsersByEnabled(params);
+    }
+
+    // 승인 대기 유저 요청 수
+    @Override
+    public int countByEnabledStatus() {
+        return adminMapper.countByEnabledStatus();
+    }
+
 }

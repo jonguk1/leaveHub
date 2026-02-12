@@ -24,7 +24,11 @@
                     <span>연차 관리 시스템</span>
                 </div>
                 <div class="header-user">
-                    <span id="employeeUserName"><strong><c:out value="${loginUser.userName}" /></strong>님 환영합니다</span>
+                    <span id="employeeUserName">
+                        <a href="/update" style="text-decoration: none; color: inherit; cursor: pointer;">
+                            <strong><c:out value="${loginUser.userName}" /></strong>님 환영합니다
+                        </a>
+                    </span>
                     <a href="/logout" class="btn btn-outline btn-sm">로그아웃</a>
                 </div>
             </div>
