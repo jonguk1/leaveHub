@@ -35,4 +35,7 @@ public interface AdminMapper {
     // 승인 대기 유저 요청 수
     int countByEnabledStatus();
 
+    // 파일 조회
+    LeaveRequestVO getLeaveRequestById(Long leaveId);
+
 }

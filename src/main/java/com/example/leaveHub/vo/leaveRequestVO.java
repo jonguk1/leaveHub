@@ -19,4 +19,7 @@ public class LeaveRequestVO {
     private Date createdAt;
     private Date updatedAt;
     private UserVO userVO;
+    private String originFileName;
+    private String storedFileName;
+    private String filePath;
 }

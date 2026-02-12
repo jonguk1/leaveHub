@@ -125,6 +125,14 @@
                                             <div class="request-reason">
                                                 <span class="request-reason-label">사유: </span><c:out value="${request.reason}" />
                                             </div>
+                                            <c:if test="${not empty request.originFileName}">
+                                                <div class="request-file" style="margin-top: 10px;">
+                                                    <span class="file-label" style="font-weight: bold; font-size: 0.9rem;">증빙 서류: </span>
+                                                    <a href="/admin/download?leaveId=${request.leaveId}" title="클릭하여 다운로드">
+                                                        <c:out value="${request.originFileName}" />
+                                                    </a>
+                                                </div>
+                                            </c:if>
                                             <c:if test="${request.status == 'REJECTED' && not empty request.rejectReason}">
                                                 <div class="reject-reason">
                                                     <span class="reject-reason-label">반려 사유: </span>

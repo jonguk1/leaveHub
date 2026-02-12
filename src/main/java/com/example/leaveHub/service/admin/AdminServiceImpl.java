@@ -85,4 +85,10 @@ public class AdminServiceImpl implements AdminService {
         return adminMapper.countByEnabledStatus();
     }
 
+    // 파일 조회
+    @Override
+    public LeaveRequestVO getLeaveRequestById(Long leaveId) {
+        return adminMapper.getLeaveRequestById(leaveId);
+    }
+
 }

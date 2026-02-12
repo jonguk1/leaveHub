@@ -24,4 +24,6 @@ public interface AdminService {
 
     int countByEnabledStatus();
 
+    LeaveRequestVO getLeaveRequestById(Long leaveId);
+
 }

@@ -17,6 +17,8 @@ import com.example.leaveHub.vo.UserVO;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -28,7 +30,9 @@ public class LeaveRequestController {
 
     // 연차 신청 처리
     @PostMapping("/leave/insert")
-    public String insertLeaveRequest(LeaveRequestVO vo, RedirectAttributes rttr, HttpSession session) {
+    public String insertLeaveRequest(LeaveRequestVO vo,
+            @RequestParam(value = "uploadFile", required = false) MultipartFile uploadFile, RedirectAttributes rttr,
+            HttpSession session) {
         // 세션에서 로그인한 유저 정보 꺼내기
         UserVO loginUser = (UserVO) session.getAttribute("loginUser");
         vo.setUserId(loginUser.getUserId());
@@ -39,7 +43,7 @@ public class LeaveRequestController {
 
         // 연차 신청 서비스 호출
         try {
-            leaveRequestService.insertLeaveRequest(vo);
+            leaveRequestService.insertLeaveRequest(vo, uploadFile);
             rttr.addFlashAttribute("message", "연차 신청이 성공적으로 등록되었습니다.");
         } catch (Exception e) {
             rttr.addFlashAttribute("errorMsg", "연차 신청 중 오류가 발생했습니다: " + e.getMessage());

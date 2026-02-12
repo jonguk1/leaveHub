@@ -68,6 +68,9 @@ function confirmDelete(leaveId, event) {
 document.addEventListener('DOMContentLoaded', function () {
     const leaveForm = document.getElementById('leaveRequestForm');
     const editForm = document.getElementById('editForm');
+    const leaveType = document.getElementById("leaveType");
+    const fileUploadSection = document.getElementById("fileUploadSection");
+    const attachment = document.getElementById("attachment");
     // 신청 폼 유효성 검사
     if (leaveForm) {
         leaveForm.onsubmit = function (e) {
@@ -105,4 +108,52 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         };
     }
+
+    // 연차 종류 변경 이벤트 리스너
+    leaveType.addEventListener("change", function () {
+        const selectedValue = this.value;
+
+        // 병가 또는 경조사일 때만 파일 업로드 칸 표시
+        if (selectedValue === "병가" || selectedValue === "경조사") {
+            fileUploadSection.style.display = "block";
+            attachment.required = true; // 필수 입력으로 변경
+        } else {
+            fileUploadSection.style.display = "none";
+            attachment.required = false; // 필수 해제
+            attachment.value = ""; // 선택했던 파일 초기화
+        }
+    });
+
+    // 유효성 검사
+    form.addEventListener("submit", function (e) {
+        if ((leaveType.value === "병가" || leaveType.value === "경조사") && !attachment.value) {
+            alert("증빙 서류를 첨부해야 합니다.");
+            e.preventDefault();
+        }
+    });
+});
+
+//파일 용량 검사 
+const attachment = document.getElementById("attachment");
+attachment.addEventListener("change", function () {
+    const file = this.file[0];
+    if (!file) return;
+
+    //용량 체크
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+        alert("파일 용량이 너무 큽니다. 5MB 이하의 파일만 업로드 가능합니다.");
+        this.value = ""; // 파일 선택 취소 (비우기)
+        return;
+    }
+
+    const allowedExtensions = ["jpg", "jpeg", "png", "pdf"];
+    const fileExtension = file.name.split(".").pop().toLowerCase();
+
+    if (!allowedExtensions.includes(fileExtension)) {
+        alert("허용되지 않는 파일 형식입니다. (jpg, png, pdf만 가능)");
+        this.value = ""; // 파일 선택 취소
+        return;
+    }
+
 });

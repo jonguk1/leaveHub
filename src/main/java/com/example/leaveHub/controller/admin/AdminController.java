@@ -1,5 +1,9 @@
 package com.example.leaveHub.controller.admin;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +18,7 @@ import com.example.leaveHub.service.admin.AdminService;
 import com.example.leaveHub.service.user.UserService;
 import com.example.leaveHub.vo.LeaveRequestVO;
 import com.example.leaveHub.vo.UserVO;
-
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -133,6 +137,42 @@ public class AdminController {
         model.addAttribute("total", total);
 
         return "admin/enabled";
+    }
+
+    /**
+     * 파일 다운로드
+     */
+    @GetMapping("/admin/download")
+    public void downloadFile(@RequestParam("leaveId") Long leaveId, HttpServletResponse response) {
+
+        // 파일 조회
+        LeaveRequestVO vo = adminService.getLeaveRequestById(leaveId);
+
+        if (vo == null || vo.getStoredFileName() == null) {
+            return;
+        }
+
+        File file = new File(vo.getFilePath(), vo.getStoredFileName());
+
+        if (file.exists()) {
+            try {
+                // 파일 이름 깨짐 방지 처리
+                String encodedName = URLEncoder.encode(vo.getOriginFileName(), "UTF-8").replaceAll("\\+", "%20");
+                // 응답 헤더 설정
+
+                response.setContentType("application/octet-stream");
+                response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedName + "\"");
+                response.setContentLength((int) file.length());
+
+                // 브라우저로 전송
+                Files.copy(file.toPath(), response.getOutputStream());
+                response.getOutputStream().flush();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
 }

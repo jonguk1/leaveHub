@@ -3,17 +3,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:import url="/WEB-INF/jsp/common/head.jsp" />
 <script src="<c:url value='/js/employee.js' />"></script>
-<c:if test="${not empty message}">
-    <script>
-        alert("${message}");
-    </script>
-</c:if>
-
-<c:if test="${not empty errorMsg}">
-    <script>
-        alert("실패: ${errorMsg}");
-    </script>
-</c:if>
 
 <!-- Employee Dashboard -->
     <div id="employeeScreen">
@@ -47,7 +36,7 @@
                         <h2 style="margin-bottom: 0.5rem;">연차 신청하기</h2>
                         <p class="card-description" style="margin-bottom: 1.5rem;">신청한 연차는 관리자의 승인 후 확정됩니다</p>
                         
-                        <form id="leaveRequestForm" action="/leave/insert" method="POST">
+                        <form id="leaveRequestForm" action="/leave/insert" method="POST" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="leaveType">연차 종류</label>
                                 <select id="leaveType" name="leaveType" required>
@@ -76,6 +65,12 @@
                                 <textarea id="reason" name="reason" rows="4" placeholder="연차 사용 사유를 입력하세요" required></textarea>
                             </div>
 
+                            <div id="fileUploadSection" class="form-group" style="display: none;">
+                                <label for="attachment">증빙 서류 첨부 (필수)</label>
+                                <input type="file" id="attachment" name="uploadFile" class="form-control">
+                                <p class="help-block" style="font-size: 0.8rem; color: #666;">* 병가/경조사는 증빙 서류 업로드가 필요합니다.</p>
+                            </div>
+
                             <button type="submit" class="btn btn-primary btn-full">신청하기</button>
                         </form>
                     </div>
@@ -92,7 +87,7 @@
                             <c:if test="${empty requestList}">
                                 <div class="empty-state">신청 내역이 없습니다</div>
                             </c:if>
-                             <c:if test="${not empty requestList}">
+                            <c:if test="${not empty requestList}">
                                 <c:forEach var="request" items="${requestList}">
                                     <div class="request-item" 
                                         data-leave-id="${request.leaveId}"
@@ -125,6 +120,11 @@
                                         <div class="request-reason">
                                             <span class="request-reason-label">사유: </span><c:out value="${request.reason}" />
                                         </div>
+                                        <c:if test="${not empty request.originFileName}">
+                                            <div class="request-reason">
+                                                <span class="request-reason-label">첨부파일: </span><c:out value="${request.originFileName}" />
+                                            </div>
+                                        </c:if>
                                         <c:if test="${request.status == 'REJECTED' && not empty request.rejectReason}">
                                             <div class="reject-reason">
                                                 <span class="reject-reason-label">반려 사유: </span>
@@ -183,6 +183,11 @@
             </div>
         </div>
         <c:import url="/WEB-INF/jsp/user/edit.jsp" />
+        <script>
+            window.onload = function() {
+                checkServerMessage("${message}", "${errorMsg}");
+            };
+        </script>
     </div>
 
 </html>

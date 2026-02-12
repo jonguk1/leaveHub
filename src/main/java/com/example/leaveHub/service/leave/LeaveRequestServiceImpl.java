@@ -5,8 +5,10 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.leaveHub.mapper.LeaveRequestMapper;
+import com.example.leaveHub.service.file.FileService;
 import com.example.leaveHub.vo.LeaveRequestVO;
 
 import lombok.RequiredArgsConstructor;
@@ -17,10 +19,28 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
 
     private final LeaveRequestMapper leaveRequestMapper;
 
+    private final FileService fileService;
+
     // 연차 신청 등록
     @Override
     @Transactional
-    public void insertLeaveRequest(LeaveRequestVO leaveRequest) {
+    public void insertLeaveRequest(LeaveRequestVO leaveRequest, MultipartFile uploadFile) {
+        String type = leaveRequest.getLeaveType();
+        boolean isFileRequired = "병가".equals(type) || "경조사".equals(type);
+
+        if (isFileRequired) {
+            // 병가인데 파일이 없는경우
+            if (uploadFile == null || uploadFile.isEmpty()) {
+                throw new RuntimeException(type + " 신청 시 증빙 서류는 필수입니다.");
+            }
+
+            // 파일 저장 진행
+            String storedFileName = fileService.saveFile(uploadFile);
+            leaveRequest.setStoredFileName(storedFileName);
+            leaveRequest.setOriginFileName(uploadFile.getOriginalFilename());
+            leaveRequest.setFilePath(fileService.getUploadDir());
+        }
+
         int result = leaveRequestMapper.insertLeaveRequest(leaveRequest);
         if (result == 0) {
             throw new RuntimeException("연차 신청 등록에 실패했습니다.");

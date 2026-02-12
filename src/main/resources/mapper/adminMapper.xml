@@ -14,6 +14,9 @@
         <result property="rejectReason" column="reject_reason"/>
         <result property="status" column="status"/> 
         <result property="createdAt" column="created_at"/>
+        <result property="originFileName" column="origin_file_name" />
+        <result property="storedFileName" column="stored_file_name" />
+        <result property="filePath" column="file_path" />
         <association property="userVO" javaType="UserVO">
             <result property="userName" column="user_name"/> 
         </association>
@@ -31,7 +34,10 @@
             req.reject_reason,
             req.status,
             req.created_at,
-            req.updated_at
+            req.updated_at,
+            req.origin_file_name,
+            req.stored_file_name,
+            req.file_path
         FROM leave_request req
         INNER JOIN users u ON req.user_id = u.user_id
     </sql>
@@ -117,6 +123,18 @@
         <where>
             enabled = 0
             AND deleted_at IS NULL
+        </where>
+    </select>
+
+    <select id="getLeaveRequestById" parameterType="long" resultType="com.example.leaveHub.vo.LeaveRequestVO">
+        SELECT 
+            leave_id,
+            origin_file_name,
+            stored_file_name,
+            file_path
+        FROM leave_request
+        <where>
+            leave_id=#{leaveId}
         </where>
     </select>
 
