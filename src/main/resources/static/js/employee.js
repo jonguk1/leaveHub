@@ -26,14 +26,26 @@ function openEditModal(leaveId) {
     const startDate = requestElement.dataset.startDate;
     const endDate = requestElement.dataset.endDate;
     const reason = requestElement.dataset.reason;
+    const originFileName = requestElement.dataset.originFileName;
 
-    console.log(leaveType, startDate, endDate, reason);
+    if (leaveType == '병가' || leaveType == '경조사') {
+        document.getElementById("editFileGroup").style.display = "block";
+    } else {
+        document.getElementById("editFileGroup").style.display = "none";
+    }
+
 
     document.getElementById('editLeaveId').value = leaveId;
     document.getElementById('editLeaveType').value = leaveType;
     document.getElementById('editStartDate').value = startDate;
     document.getElementById('editEndDate').value = endDate;
     document.getElementById('editReason').value = reason;
+    const fileInfoArea = document.getElementById('editFileInfo');
+    if (originFileName) {
+        fileInfoArea.innerHTML = `현재 첨부된 파일: ${originFileName}`;
+    } else {
+        fileInfoArea.innerHTML = '첨부된 파일이 없습니다.';
+    }
 
     openModal('editModal');
 }

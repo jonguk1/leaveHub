@@ -1,5 +1,6 @@
 package com.example.leaveHub.service.leave;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +63,45 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     // 내 연차 수정
     @Override
     @Transactional
-    public void updateLeaveRequest(LeaveRequestVO vo, String userId) {
+    public void updateLeaveRequest(LeaveRequestVO vo, MultipartFile uploadFile, String userId) {
+        LeaveRequestVO oldData = leaveRequestMapper.getLeaveRequestById(vo.getLeaveId());
+
+        // 새로운 파일이 업로드된 경우
+        if (uploadFile != null && !uploadFile.isEmpty()) {
+            // 기존 파일이 있으면 물리적 삭제
+            if (oldData != null && oldData.getStoredFileName() != null) {
+                File oldFile = new File(oldData.getFilePath(), oldData.getStoredFileName());
+                if (oldFile.exists())
+                    oldFile.delete();
+            }
+
+            // 새로운 파일 저장
+            String storedFileName = fileService.saveFile(uploadFile);
+            vo.setStoredFileName(storedFileName);
+            vo.setOriginFileName(uploadFile.getOriginalFilename());
+            vo.setFilePath(fileService.getUploadDir());
+
+        } else {
+            // 새로운 파일이 없는 경우
+            // 일반 연차로 변경한 경우
+            if (!"병가".equals(vo.getLeaveType()) && !"경조사".equals(vo.getLeaveType())) {
+                // 기존 파일 삭제
+                if (oldData != null && oldData.getStoredFileName() != null) {
+                    File oldFile = new File(oldData.getFilePath(), oldData.getStoredFileName());
+                    if (oldFile.exists())
+                        oldFile.delete();
+                }
+                vo.setStoredFileName(null);
+                vo.setOriginFileName(null);
+                vo.setFilePath(null);
+            } else {
+                // 내용만 수정한 경우, 기존 파일 정보 유지
+                vo.setStoredFileName(oldData.getStoredFileName());
+                vo.setOriginFileName(oldData.getOriginFileName());
+                vo.setFilePath(oldData.getFilePath());
+            }
+        }
+
         int result = leaveRequestMapper.updateLeaveRequest(vo, userId);
         if (result == 0) {
             throw new RuntimeException("수정 권한이 없거나, 이미 처리된 신청 건입니다.");

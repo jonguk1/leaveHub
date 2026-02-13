@@ -94,7 +94,8 @@
                                         data-leave-type="${request.leaveType}"
                                         data-start-date="${request.startDate}"
                                         data-end-date="${request.endDate}"
-                                        data-reason="${request.reason}">
+                                        data-reason="${request.reason}"
+                                        data-origin-file-name="${request.originFileName}">
                                         <div class="request-header">
                                             <div class="request-info">
                                                 <div class="request-title">

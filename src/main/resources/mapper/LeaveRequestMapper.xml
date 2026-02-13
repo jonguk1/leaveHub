@@ -67,7 +67,10 @@
             start_date = #{vo.startDate},
             end_date = #{vo.endDate},
             reason = #{vo.reason},
-            updated_at = SYSDATE
+            updated_at = SYSDATE,
+            origin_file_name = #{vo.originFileName},
+            stored_file_name = #{vo.storedFileName},
+            file_path = #{vo.filePath}
         <where> 
             leave_id = #{vo.leaveId} 
             AND user_id = #{userId} 
@@ -82,6 +85,18 @@
             AND status = 'PENDING'
         </where>
     </delete>
+
+    <select id="getLeaveRequestById" parameterType="long" resultType="com.example.leaveHub.vo.LeaveRequestVO">
+        SELECT 
+            leave_id,
+            origin_file_name,
+            stored_file_name,
+            file_path
+        FROM leave_request
+        <where>
+            leave_id=#{leaveId}
+        </where>
+    </select>
 
 
 </mapper>

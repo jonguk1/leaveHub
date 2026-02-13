@@ -80,13 +80,15 @@ public class LeaveRequestController {
 
     // 내 연차 수정
     @PostMapping("/leave/update")
-    public String updateLeaveRequest(LeaveRequestVO vo, HttpSession session, RedirectAttributes rttr) {
+    public String updateLeaveRequest(LeaveRequestVO vo,
+            @RequestParam(value = "uploadFile", required = false) MultipartFile uploadFile, HttpSession session,
+            RedirectAttributes rttr) {
         // 세션에서 로그인한 유저 정보 꺼내기
         UserVO loginUser = (UserVO) session.getAttribute("loginUser");
 
         // 연차 수정 서비스 호출
         try {
-            leaveRequestService.updateLeaveRequest(vo, loginUser.getUserId());
+            leaveRequestService.updateLeaveRequest(vo, uploadFile, loginUser.getUserId());
             rttr.addFlashAttribute("message", "연차 신청이 성공적으로 수정되었습니다.");
         } catch (Exception e) {
             rttr.addFlashAttribute("errorMsg", "연차 신청 수정 중 오류가 발생했습니다: " + e.getMessage());

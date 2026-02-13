@@ -14,7 +14,7 @@ public interface LeaveRequestService {
 
     List<LeaveRequestVO> getLeaveRequestsByUserId(Map<String, Object> params);
 
-    void updateLeaveRequest(LeaveRequestVO vo, String userId);
+    void updateLeaveRequest(LeaveRequestVO vo, MultipartFile uploadFile, String userId);
 
     void deleteLeaveRequest(Long leaveId);
 }

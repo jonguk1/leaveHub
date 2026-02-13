@@ -25,4 +25,7 @@ public interface LeaveRequestMapper {
     // 내 연차 삭제
     int deleteLeaveRequest(Long leaveId);
 
+    // 특정 연차 신청 조회
+    LeaveRequestVO getLeaveRequestById(Long leaveId);
+
 }

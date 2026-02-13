@@ -9,7 +9,7 @@
                 <h3 class="modal-title">연차 신청 수정</h3>
                 <p class="modal-description">대기 중인 연차 신청을 수정할 수 있습니다</p>
             </div>
-            <form id="editForm" action="/leave/update" method="POST">
+            <form id="editForm" action="/leave/update" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="editLeaveType">연차 종류</label>
                     <select id="editLeaveType" name="leaveType" required>
@@ -36,6 +36,12 @@
                 <div class="form-group">
                     <label for="editReason">사유</label>
                     <textarea id="editReason" name="reason" rows="4" required></textarea>
+                </div>
+
+                <div class="form-group" id="editFileGroup">
+                    <label for="editFile">첨부 파일</label>
+                    <input type="file" id="editFile" name="uploadFile" accept=".pdf,.doc,.docx,.jpg,.png">
+                    <div id="editFileInfo" style="margin-top: 5px; font-size: 0.9em; color: #555;"></div>
                 </div>
 
                 <div class="modal-footer">
