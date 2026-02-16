@@ -79,7 +79,7 @@
                                                         <input type="hidden" name="userName" value="${user.userName}">
                                                     </form>
                                                 </div>
-                                                <div class="request-created">가입 신청일: ${request.createdAt}</div>
+                                                <div class="request-created">가입 신청일: ${user.createdAt}</div>
                                             </div>
                                         </c:forEach>
                                     </c:if>
