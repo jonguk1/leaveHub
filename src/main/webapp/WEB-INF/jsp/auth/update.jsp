@@ -58,4 +58,9 @@
 
             <form id="deleteForm" action="/user/delete" method="post" style="display:none;"></form>
         </div>
+        <script>
+            window.onload = function() {
+                checkServerMessage("${message}", "${errorMsg}");
+            };
+        </script>
     </div>

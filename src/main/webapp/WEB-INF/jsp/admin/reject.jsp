@@ -22,3 +22,8 @@
             </form>
         </div>
     </div>
+    <script>
+        window.onload = function() {
+            checkServerMessage("${message}", "${errorMsg}");
+        };
+    </script>

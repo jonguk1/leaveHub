@@ -43,6 +43,11 @@
             </c:if>
         </div>
     </div>
+    <script>
+        window.onload = function() {
+            checkServerMessage("${message}", "${errorMsg}");
+        };
+    </script>
 </body>
 
 </html>

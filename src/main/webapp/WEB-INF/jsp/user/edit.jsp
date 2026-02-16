@@ -53,5 +53,10 @@
         </div>
     </div>
 </body>
+<script>
+    window.onload = function() {
+        checkServerMessage("${message}", "${errorMsg}");
+    };
+</script>
 
 </html>
