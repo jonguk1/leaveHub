@@ -1,5 +1,6 @@
 package com.example.leaveHub.service.user;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,10 +15,18 @@ public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
 
+    private final BCryptPasswordEncoder passwordEncoder;
+
     // 로그인 기능
     @Override
     public UserVO login(String userId, String password) {
-        return userMapper.login(userId, password);
+        UserVO user = userMapper.getUserById(userId);
+
+        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
+            return user;
+        }
+
+        return null;
     }
 
     // 회원가입
@@ -47,13 +56,18 @@ public class UserServiceImpl implements UserService {
         }
 
         // 2. 현재 비밀번호 확인
-        if (!existingUser.getPassword().equals(currentPassword)) {
+        if (!passwordEncoder.matches(currentPassword, existingUser.getPassword())) {
             throw new RuntimeException("현재 비밀번호가 일치하지 않습니다.");
         }
 
         // 사용자가 '새 비밀번호' 칸을 비워뒀다면, DB에 있던 기존 비밀번호를 그대로 사용
         if (userVO.getPassword() == null || userVO.getPassword().trim().isEmpty()) {
             userVO.setPassword(existingUser.getPassword());
+        } else {
+            // 암호화 처리
+            System.out.println("암호화 전 비밀번호: " + userVO.getPassword());
+            String encodedPassword = passwordEncoder.encode(userVO.getPassword());
+            userVO.setPassword(encodedPassword);
         }
 
         int result = userMapper.updateUser(userVO);

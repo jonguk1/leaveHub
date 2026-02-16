@@ -1,5 +1,6 @@
 package com.example.leaveHub.controller.auth;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
@@ -21,11 +22,13 @@ public class UserController {
 
     private final UserService userService;
 
+    private final BCryptPasswordEncoder passwordEncoder;
+
     // 로그인 기능
     @PostMapping("/login")
-    public String login(String userId, String password, HttpSession session, Model model) {
+    public String login(String userId, String password, HttpSession session, Model model, RedirectAttributes rttr) {
         UserVO user = userService.login(userId, password);
-        if (user != null) {
+        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
             // 로그인 성공 처리
             session.setAttribute("loginUser", user);
             // 권한(Role)에 따른 분기 처리
@@ -36,8 +39,8 @@ public class UserController {
             }
         } else {
             // 로그인 실패 처리
-            model.addAttribute("errorMsg", "아이디 또는 비밀번호가 틀렸습니다.");
-            return "auth/login";
+            rttr.addFlashAttribute("errorMsg", "아이디 또는 비밀번호가 틀렸습니다.");
+            return "redirect:/";
         }
     }
 
@@ -52,6 +55,11 @@ public class UserController {
     @PostMapping("/register")
     public String register(UserVO userVO, RedirectAttributes rttr) {
         try {
+            // 비밀번호 암호화
+            String password = userVO.getPassword();
+            String encodedPassword = passwordEncoder.encode(password);
+            userVO.setPassword(encodedPassword);
+            // 회원가입 서비스 호출
             userService.register(userVO);
             rttr.addFlashAttribute("message", "회원가입이 성공하였습니다.관리자의 승인을 기다리세요");
         } catch (Exception e) {

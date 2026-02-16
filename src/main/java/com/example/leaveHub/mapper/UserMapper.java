@@ -7,9 +7,6 @@ import com.example.leaveHub.vo.UserVO;
 
 @Mapper
 public interface UserMapper {
-    // ID와 PW로 사용자 조회
-    UserVO login(@Param("userId") String userId, @Param("password") String password);
-
     // 회원가입
     int register(UserVO userVO);
 

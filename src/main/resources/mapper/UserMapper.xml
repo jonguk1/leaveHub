@@ -3,17 +3,6 @@
  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.leaveHub.mapper.UserMapper">
-<select id="login" parameterType="map" resultType="com.example.leaveHub.vo.UserVO">
-    SELECT user_id,
-           user_name,
-           password,
-           role,
-           created_at,
-           enabled
-    FROM users
-    WHERE user_id = #{userId}
-      AND password = #{password}
-</select>
 <insert id= "register" parameterType="com.example.leaveHub.vo.UserVO" >
    INSERT INTO users
    (
@@ -57,7 +46,9 @@
     SELECT user_id,
            user_name,
            password,
-           role
+           role,
+           created_at,
+           enabled
     FROM users
     <where>
         user_id = #{userId}

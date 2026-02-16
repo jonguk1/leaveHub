@@ -196,5 +196,10 @@
         </div>
     </div>
     <c:import url="/WEB-INF/jsp/admin/reject.jsp" />
+    <script>
+        window.onload = function() {
+            checkServerMessage("${message}", "${errorMsg}");
+        };
+    </script>
 
 </html>
