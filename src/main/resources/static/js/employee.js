@@ -57,115 +57,94 @@ function closeEditModal() {
 
 // 삭제 확인
 function confirmDelete(leaveId, event) {
-    if (confirm('정말 삭제하시겠습니까?')) {
-        const form = document.getElementById('deleteForm_' + leaveId);
+    if (!confirm('정말 삭제하시겠습니까?')) return;
 
-        if (form) {
-            // 중복 클릭 방지
-            const btn = event.currentTarget;
-            if (btn) {
-                // 버튼 비활성화
-                btn.disabled = true;
-                btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> 처리 중...';
-            }
-            // 폼 제출
-            form.submit();
-        } else {
-            alert("삭제 대상을 찾을 수 없습니다.");
-        }
-    }
+    const formId = 'deleteForm_' + leaveId;
+
+    console.log("삭제 폼 ID:", formId); // 디버깅용 로그
+
+    submitFormWithDisable({
+        formId,
+        submitBtn: event.currentTarget,
+        loadingText: '삭제 중...'
+    });
 }
 
-// 연차 신청 및 수정 폼 유효성 검사
-document.addEventListener('DOMContentLoaded', function () {
-    const leaveForm = document.getElementById('leaveRequestForm');
-    const editForm = document.getElementById('editForm');
+/**
+ *  유효성 검사(신청용)
+ */
+function validateLeaveForm() {
     const leaveType = document.getElementById("leaveType");
-    const fileUploadSection = document.getElementById("fileUploadSection");
     const attachment = document.getElementById("attachment");
-    // 신청 폼 유효성 검사
-    if (leaveForm) {
-        leaveForm.onsubmit = function (e) {
-            const startVal = document.getElementById('startDate').value;
-            const endVal = document.getElementById('endDate').value;
+    const startVal = document.getElementById('startDate').value;
+    const endVal = document.getElementById('endDate').value;
 
-            if (!startVal || !endVal) return true; // HTML5 required가 처리하도록 함
-
-            const start = new Date(startVal);
-            const end = new Date(endVal);
-
-            if (start > end) {
-                alert("종료일은 시작일보다 빠를 수 없습니다.");
-                e.preventDefault();
-                return false;
-            }
-        };
-    }
-
-    // 수정 폼 유효성 검사
-    if (editForm) {
-        editForm.onsubmit = function (e) {
-            const startVal = document.getElementById('editStartDate').value;
-            const endVal = document.getElementById('editEndDate').value;
-
-            if (!startVal || !endVal) return true; // HTML5 required가 처리하도록 함
-
-            const start = new Date(startVal);
-            const end = new Date(endVal);
-
-            if (start > end) {
-                alert("종료일은 시작일보다 빠를 수 없습니다.");
-                e.preventDefault();
-                return false;
-            }
-        };
-    }
-
-    // 연차 종류 변경 이벤트 리스너
-    leaveType.addEventListener("change", function () {
-        const selectedValue = this.value;
-
-        // 병가 또는 경조사일 때만 파일 업로드 칸 표시
-        if (selectedValue === "병가" || selectedValue === "경조사") {
-            fileUploadSection.style.display = "block";
-            attachment.required = true; // 필수 입력으로 변경
-        } else {
-            fileUploadSection.style.display = "none";
-            attachment.required = false; // 필수 해제
-            attachment.value = ""; // 선택했던 파일 초기화
+    if (startVal && endVal) {
+        if (new Date(startVal) > new Date(endVal)) {
+            alert("종료일은 시작일보다 빠를 수 없습니다.");
+            return false;
         }
-    });
+    }
 
-    // 유효성 검사
-    form.addEventListener("submit", function (e) {
-        if ((leaveType.value === "병가" || leaveType.value === "경조사") && !attachment.value) {
-            alert("증빙 서류를 첨부해야 합니다.");
-            e.preventDefault();
+    const isSpecialLeave = leaveType && (leaveType.value === "병가" || leaveType.value === "경조사");
+    if (isSpecialLeave && !attachment.value) {
+        alert("증빙 서류를 첨부해야 합니다.");
+        return false;
+    }
+    return true;
+}
+
+/**
+ * 2.  유효성 검사 (수정용)
+ */
+function validateEditForm() {
+    const leaveType = document.getElementById("editLeaveType");
+    const attachment = document.getElementById("editAttachment");
+    const startVal = document.getElementById('editStartDate').value;
+    const endVal = document.getElementById('editEndDate').value;
+    // 기존 파일 존재 여부 확인 (텍스트 영역 등에서 판단)
+    const currentFile = document.getElementById('editFileInfo').innerText;
+    const hasExistingFile = currentFile.includes('현재 첨부된 파일:');
+
+    if (startVal && endVal) {
+        if (new Date(startVal) > new Date(endVal)) {
+            alert("종료일은 시작일보다 빠를 수 없습니다.");
+            return false;
         }
+    }
+
+    const isSpecialLeave = leaveType && (leaveType.value === "병가" || leaveType.value === "경조사");
+    // 기존 파일도 없고, 새로 선택한 파일도 없는 경우만 체크
+    if (isSpecialLeave && !hasExistingFile && !attachment.value) {
+        alert("증빙 서류를 첨부해야 합니다.");
+        return false;
+    }
+    return true;
+}
+
+// 신청 확인
+function confirmLeaveRequest(btn) {
+    if (!validateLeaveForm()) return;
+    if (!confirm('연차를 신청하시겠습니까?')) return;
+
+    submitFormWithDisable({
+        formId: 'leaveRequestForm',
+        submitBtn: btn,
+        loadingText: '신청 중...'
     });
-});
+}
 
-//파일 용량 검사 
-const attachment = document.getElementById("attachment");
-attachment.addEventListener("change", function () {
-    const file = this.file[0];
-    if (!file) return;
+// 수정 확인
+function confirmEditLeaveRequest(btn) {
+    if (!validateEditForm()) return;
+    if (!confirm('수정 내용을 저장하시겠습니까?')) return;
 
-    //용량 체크
-    const maxSize = 5 * 1024 * 1024;
-    if (file.size > maxSize) {
-        alert("파일 용량이 너무 큽니다. 5MB 이하의 파일만 업로드 가능합니다.");
-        this.value = ""; // 파일 선택 취소 (비우기)
-        return;
-    }
+    submitFormWithDisable({
+        formId: 'editForm', // 수정 폼 ID
+        submitBtn: btn,
+        loadingText: '수정 중...'
+    });
+}
 
-    const allowedExtensions = ["jpg", "jpeg", "png", "pdf"];
-    const fileExtension = file.name.split(".").pop().toLowerCase();
 
-    if (!allowedExtensions.includes(fileExtension)) {
-        alert("허용되지 않는 파일 형식입니다. (jpg, png, pdf만 가능)");
-        this.value = ""; // 파일 선택 취소
-        return;
-    }
 
-});

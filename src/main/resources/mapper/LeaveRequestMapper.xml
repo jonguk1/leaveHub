@@ -25,9 +25,9 @@
             #{endDate}, 
             #{reason}, 
             #{status},
-            #{originFileName},
-            #{storedFileName},
-            #{filePath}
+            #{originFileName, jdbcType=VARCHAR},
+            #{storedFileName, jdbcType=VARCHAR},
+            #{filePath, jdbcType=VARCHAR}
         )
     </insert>
 
@@ -96,6 +96,16 @@
         <where>
             leave_id=#{leaveId}
         </where>
+    </select>
+
+    <select id="countDuplicateLeave" parameterType="LeaveRequestVO" resultType="int">
+        SELECT COUNT(*)
+        FROM leave_request
+        WHERE user_id = #{userId}
+        AND status != 'REJECTED'  AND (
+                start_date &lt;= #{endDate}
+                AND end_date &gt;= #{startDate}
+          )
     </select>
 
 

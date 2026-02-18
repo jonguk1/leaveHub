@@ -61,3 +61,28 @@ function checkServerMessage(msg, error) {
         alert(error);
     }
 }
+
+// 중복체크 방지
+function submitFormWithDisable({ formId, submitBtn, loadingText = '처리 중...' }) {
+    const form = document.getElementById(formId);
+
+    if (!form) {
+        alert("요청 대상을 찾을 수 없습니다.");
+        return;
+    }
+
+    const btn = submitBtn;
+    if (!btn) return;
+
+    // 이미 처리 중이면 중단
+    if (btn.disabled) return;
+
+    // 버튼 비활성화 + 로딩 표시
+    btn.disabled = true;
+    btn.innerHTML = `
+        <span class="spinner-border spinner-border-sm"></span>
+        ${loadingText}
+    `;
+
+    form.submit();
+}

@@ -26,6 +26,16 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     @Override
     @Transactional
     public void insertLeaveRequest(LeaveRequestVO leaveRequest, MultipartFile uploadFile) {
+
+        if (leaveRequest.getStartDate().compareTo(leaveRequest.getEndDate()) > 0) {
+            throw new RuntimeException("종료일은 시작일보다 빠를 수 없습니다.");
+        }
+
+        int duplicateCount = leaveRequestMapper.countDuplicateLeave(leaveRequest);
+        if (duplicateCount > 0) {
+            throw new RuntimeException("이미 동일한 기간에 연차 신청이 존재합니다.");
+        }
+
         String type = leaveRequest.getLeaveType();
         boolean isFileRequired = "병가".equals(type) || "경조사".equals(type);
 
@@ -64,6 +74,11 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     @Override
     @Transactional
     public void updateLeaveRequest(LeaveRequestVO vo, MultipartFile uploadFile, String userId) {
+
+        if (vo.getStartDate().compareTo(vo.getEndDate()) > 0) {
+            throw new RuntimeException("종료일은 시작일보다 빠를 수 없습니다.");
+        }
+
         LeaveRequestVO oldData = leaveRequestMapper.getLeaveRequestById(vo.getLeaveId());
 
         // 새로운 파일이 업로드된 경우

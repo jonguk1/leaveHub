@@ -6,11 +6,15 @@ function switchAdminTab(tabName) {
 }
 
 // 연차 승인 확인
-function confirmApprove(leaveId) {
+function confirmApprove(leaveId, event) {
     if (confirmAction('이 신청을 승인하시겠습니까?')) {
         const form = document.getElementById('approveForm_' + leaveId);
         if (form) {
-            form.submit();
+            submitFormWithDisable({
+                formId: form,
+                event,
+                loadingText: '승인 중...'
+            });
         }
     }
 }
@@ -59,21 +63,25 @@ function closeRejectModal() {
 }
 
 // 회원 가입 승인 확인
-function approveUser(userId) {
+function approveUser(userId, event) {
     if (confirmAction(' 사용자의 가입을 승인하시겠습니까?')) {
         const form = document.getElementById('approveForm_' + userId);
-        if (form) {
-            form.submit();
-        }
+        submitFormWithDisable({
+            formId: form,
+            event,
+            loadingText: '승인 중...'
+        });
     }
 }
 
 // 회원 가입 거절 확인
-function rejectUser(userId, userName) {
+function rejectUser(userId, userName, event) {
     if (confirmAction(userName + '님의 가입 요청을 거절하시겠습니까?')) {
         const form = document.getElementById('rejectForm_' + userId);
-        if (form) {
-            form.submit();
-        }
+        submitFormWithDisable({
+            formId: form,
+            event,
+            loadingText: '거절 중...'
+        });
     }
 }

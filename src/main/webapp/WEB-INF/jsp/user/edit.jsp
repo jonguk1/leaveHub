@@ -46,7 +46,7 @@
 
                 <div class="modal-footer">
                     <input type="hidden" id="editLeaveId" name="leaveId">
-                    <button type="submit" class="btn btn-primary" style="flex: 1;">수정 완료</button>
+                    <button type="button" class="btn btn-primary" style="flex: 1;" onclick="confirmEdit(this)">수정 완료</button>
                     <button type="button" class="btn btn-outline" onclick="closeEditModal()">취소</button>
                 </div>
             </form>

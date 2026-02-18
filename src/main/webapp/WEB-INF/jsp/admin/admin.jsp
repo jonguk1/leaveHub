@@ -113,9 +113,9 @@
                                                 <c:if test="${request.status == 'PENDING'}">
                                                     <div class="request-actions">
                                                         <button type="button" class="btn btn-success btn-sm" 
-                                                                onclick="confirmApprove('${request.leaveId}')">✓ 승인</button>
+                                                                onclick="confirmApprove('${request.leaveId}', event)">✓ 승인</button>
                                                         <button type="button" class="btn btn-danger btn-sm" 
-                                                                onclick="openRejectModal('${request.leaveId}', '${request.userVO.userName}', '${request.leaveType}', '${request.startDate}', '${request.endDate}')">✕ 반려</button>
+                                                                onclick="openRejectModal('${request.leaveId}', '${request.userVO.userName}', '${request.leaveType}', '${request.startDate}', '${request.endDate}', event)">✕ 반려</button>
                                                     </div>
                                                     <form id="approveForm_${request.leaveId}" action="/admin/approve" method="POST" style="display:none;">
                                                         <input type="hidden" name="leaveId" value="${request.leaveId}">

@@ -71,7 +71,7 @@
                                 <p class="help-block" style="font-size: 0.8rem; color: #666;">* 병가/경조사는 증빙 서류 업로드가 필요합니다.</p>
                             </div>
 
-                            <button type="submit" class="btn btn-primary btn-full">신청하기</button>
+                            <button type="button" class="btn btn-primary btn-full" onclick="confirmLeaveRequest(this)">신청하기</button>
                         </form>
                     </div>
 
@@ -114,7 +114,7 @@
                                             <c:if test="${request.status == 'PENDING'}">
                                                 <div class="request-actions">
                                                     <button type="button" class="btn btn-outline btn-sm" onclick="openEditModal('${request.leaveId}')">✏️</button>
-                                                    <button type="button" class="btn btn-outline btn-sm" onclick="confirmDelete('${request.leaveId}')">🗑️</button>
+                                                    <button type="button" class="btn btn-outline btn-sm" onclick="confirmDelete('${request.leaveId}',event)">🗑️</button>
                                                 </div>
                                             </c:if>
                                         </div>

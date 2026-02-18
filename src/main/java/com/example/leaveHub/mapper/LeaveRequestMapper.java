@@ -28,4 +28,7 @@ public interface LeaveRequestMapper {
     // 특정 연차 신청 조회
     LeaveRequestVO getLeaveRequestById(Long leaveId);
 
+    // 중복 연차 신청 확인
+    int countDuplicateLeave(LeaveRequestVO leaveRequest);
+
 }
